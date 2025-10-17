@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { Card, CardContent } from '@/components/ui/card';
 
 const postsCollectionPath = 'blog_posts';
 
@@ -32,7 +33,11 @@ export default function Home() {
   }, [auth]);
   
   useEffect(() => {
-    if (!firestore) return;
+    // Only fetch posts if a user is logged in and firestore is available.
+    if (!firestore || !user) {
+      setPosts([]); // Clear posts if user logs out
+      return;
+    }
     
     const postsCollection = collection(firestore, postsCollectionPath);
     const q = query(
@@ -55,7 +60,7 @@ export default function Home() {
     });
 
     return () => unsubscribe();
-  }, [firestore, toast]);
+  }, [firestore, user, toast]); // Re-run effect when user or firestore instance changes
 
   const handleLogout = () => {
     if (auth) {
@@ -84,7 +89,17 @@ export default function Home() {
       </aside>
 
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <BlogView posts={posts} />
+        {user ? (
+          <BlogView posts={posts} />
+        ) : (
+           <Card>
+            <CardContent className="pt-6">
+              <p className="text-center text-muted-foreground">
+                There are currently issues with displaying public posts. Please sign in to view content.
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </main>
     </div>
   );
