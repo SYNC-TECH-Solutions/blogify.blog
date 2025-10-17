@@ -2,9 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, Facebook, Instagram, Twitter, Rss } from "lucide-react";
+import { Facebook, Instagram, Twitter, Rss } from "lucide-react";
 import { categories } from "@/lib/categories";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export default function Footer() {
     return (
@@ -13,7 +14,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="col-span-1 md:col-span-1 flex flex-col items-start">
                          <Link href="/" className="flex items-center gap-3 mb-4">
-                            <BookOpen className="h-7 w-7 text-primary" />
+                            <Image src="/bbrb.png" alt="Blogify.blog Logo" width={28} height={28} />
                             <h1 className="text-2xl font-bold text-foreground">Blogify<span className="text-primary text-lg">.blog</span></h1>
                         </Link>
                         <p className="text-sm text-muted-foreground">Your global stage for ideas, insights, and innovation.</p>

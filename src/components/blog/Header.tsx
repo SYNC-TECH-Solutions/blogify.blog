@@ -3,7 +3,7 @@
 
 import { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { BookOpen, LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss } from "lucide-react";
+import { LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +24,7 @@ import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 interface HeaderProps {
   user: User | null;
@@ -97,7 +98,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
 
         <div className="flex justify-center">
           <Link href="/" className="flex items-center gap-3">
-            <BookOpen className="h-7 w-7 text-primary" />
+            <Image src="/bbrb.png" alt="Blogify.blog Logo" width={28} height={28} />
             <h1 className="text-2xl font-bold text-foreground">
               Blogify<span className="text-primary text-lg">.blog</span>
             </h1>
