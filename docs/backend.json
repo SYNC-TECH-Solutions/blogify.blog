@@ -1,64 +1,108 @@
 {
   "entities": {
     "BlogPost": {
-      "title": "Blog Post",
-      "description": "Represents a single blog post entry.",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BlogPost",
       "type": "object",
+      "description": "Represents a blog post in the CMS.",
       "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the blog post."
+        },
         "title": {
           "type": "string",
           "description": "The title of the blog post."
         },
         "content": {
           "type": "string",
-          "description": "The main content of the blog post in Markdown format."
+          "description": "The content of the blog post."
         },
         "authorId": {
           "type": "string",
-          "description": "The UID of the author."
-        },
-        "authorName": {
-          "type": "string",
-          "description": "The display name of the author."
-        },
-        "category": {
-            "type": "string",
-            "description": "The category of the blog post.",
-            "enum": [
-                "Sports",
-                "Movies & TV",
-                "Life",
-                "Tech",
-                "Fitness & Health"
-            ]
+          "description": "Reference to the Author. (Relationship: Author 1:N BlogPost)"
         },
         "isPublished": {
           "type": "boolean",
-          "description": "Whether the post is visible to the public."
+          "description": "Indicates whether the blog post is published."
         },
         "createdAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the post was created."
+          "description": "The timestamp when the blog post was created.",
+          "format": "date-time"
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the post was last updated."
+          "description": "The timestamp when the blog post was last updated.",
+          "format": "date-time"
         }
       },
-      "required": ["title", "content", "authorId", "authorName", "category", "isPublished", "createdAt"]
+      "required": [
+        "id",
+        "title",
+        "content",
+        "authorId",
+        "isPublished",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Author": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Author",
+      "type": "object",
+      "description": "Represents the author of a blog post.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the author."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the author."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the author.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email"
+      ]
     }
   },
   "auth": {
-    "providers": ["email-password"]
+    "providers": [
+      "password",
+      "anonymous"
+    ]
   },
   "firestore": {
-    "/blog_posts/{postId}": {
-      "schema": {
-        "$ref": "#/entities/BlogPost"
-      },
-      "description": "A collection of blog posts."
-    }
+    "structure": [
+      {
+        "path": "/artifacts/{appId}/public/data/blog_posts/{blogPostId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/backend/entities/BlogPost"
+          },
+          "description": "Collection of blog posts.  The 'authorId' field must match the authenticated user's UID for write access. Read access is public.",
+          "params": [
+            {
+              "name": "appId",
+              "description": "The application ID.  Corresponds to the '__app_id' environment variable."
+            },
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier for the blog post."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "To address the FirestorePermissionError and ensure secure data access, the structure focuses on path-based ownership for blog posts.  The `blog_posts` collection is located under a path incorporating the app ID to prevent conflicts and ensure proper data scoping. Authorization Independence is achieved because writes are restricted to only authenticated users, and read access is granted to anyone to fulfill the real-time blog display requirement. All blog posts within this collection inherit the same security posture (public read, author-only write/delete). This prevents mixing data with varying access control needs within the same collection, simplifying the security rules. This structure directly supports the required QAPs (list operation allowed for all, and writes are allowed for the admin)."
   }
 }
