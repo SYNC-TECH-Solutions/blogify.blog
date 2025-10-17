@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { onSnapshot, query, where, collection } from 'firebase/firestore';
+import { onSnapshot, query, where, collection, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import BlogView from '@/components/blog/BlogView';
@@ -53,7 +53,8 @@ export default function CategoryPage() {
     const q = query(
       postsCollection, 
       where('category', '==', category),
-      where('isPublished', '==', true)
+      where('isPublished', '==', true),
+      orderBy('createdAt', 'desc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -62,13 +63,7 @@ export default function CategoryPage() {
         ...doc.data(),
       } as BlogPost));
       
-      const sortedPosts = postsData.sort((a, b) => {
-        const dateA = a.createdAt?.toDate()?.getTime() || 0;
-        const dateB = b.createdAt?.toDate()?.getTime() || 0;
-        return dateB - dateA;
-      });
-
-      setPosts(sortedPosts);
+      setPosts(postsData);
       setLoading(false);
     }, (error) => {
       console.error("Error fetching category posts:", error);

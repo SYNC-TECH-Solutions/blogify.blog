@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { onSnapshot, query, orderBy, collection } from 'firebase/firestore';
+import { onSnapshot, query, orderBy, collection, where } from 'firebase/firestore';
 import { useAuth, useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
@@ -35,7 +35,11 @@ export default function Home() {
     if (!firestore) return;
     
     const postsCollection = collection(firestore, postsCollectionPath);
-    const q = query(postsCollection, orderBy('createdAt', 'desc'));
+    const q = query(
+      postsCollection, 
+      where('isPublished', '==', true),
+      orderBy('createdAt', 'desc')
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({
         id: doc.id,
