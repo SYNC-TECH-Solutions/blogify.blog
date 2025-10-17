@@ -29,6 +29,7 @@ interface AdminDashboardProps {
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
+  authorName: z.string().min(1, 'Author Name is required'),
   content: z.string().min(1, 'Content is required'),
 });
 
@@ -45,19 +46,20 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
-    defaultValues: { title: '', content: '' },
+    defaultValues: { title: '', authorName: '', content: '' },
   });
 
   useEffect(() => {
     if (selectedPost) {
       form.reset({
         title: selectedPost.title,
+        authorName: selectedPost.authorName,
         content: selectedPost.content,
       });
     } else {
-      form.reset({ title: '', content: '' });
+      form.reset({ title: '', authorName: user.displayName || 'Admin', content: '' });
     }
-  }, [selectedPost, form]);
+  }, [selectedPost, form, user.displayName]);
 
   const onSubmit = async (data: PostFormData) => {
     if (!firestore) {
@@ -92,7 +94,6 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       const postData = {
         ...data,
         authorId: user.uid,
-        authorName: user.displayName || 'Admin',
         isPublished: true,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -151,19 +152,34 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your Post Title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your Post Title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="authorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Author Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="content"
