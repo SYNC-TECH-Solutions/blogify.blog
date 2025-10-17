@@ -3,41 +3,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import BlogView from '@/components/blog/BlogView';
 import { useRouter } from 'next/navigation';
+import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
+import { useToast } from "@/hooks/use-toast";
+import { Loader } from '@/components/ui/loader';
 
-const staticPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "Welcome to Blogify.blog!",
-    content: "This is a placeholder post. Your dynamic content from Firestore will appear here once the security rule deployment issues are resolved. We are working on a fix!",
-    authorId: "system",
-    authorName: "Blogify Team",
-    category: "Announcements",
-    isPublished: true,
-    createdAt: new Date() as any, 
-    updatedAt: new Date() as any,
-  },
-    {
-    id: "2",
-    title: "The Power of Static Content",
-    content: "By switching to static content temporarily, we can ensure the site remains online and accessible while backend issues are addressed. This demonstrates a robust fallback strategy.",
-    authorId: "system",
-    authorName: "Dev Team",
-    category: "Tech",
-    isPublished: true,
-    createdAt: new Date() as any,
-    updatedAt: new Date() as any,
-  }
-];
-
+const postsCollectionPath = 'blog_posts';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
 
   useEffect(() => {
@@ -47,6 +30,38 @@ export default function Home() {
     });
     return () => unsubscribeAuth();
   }, [auth]);
+
+  useEffect(() => {
+    if (!firestore) return;
+    setLoading(true);
+
+    const postsCollection = collection(firestore, postsCollectionPath);
+    const q = query(
+      postsCollection, 
+      where('isPublished', '==', true),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const postsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      } as BlogPost));
+      setPosts(postsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Firestore Error:", error);
+      toast({
+        title: "Error Fetching Posts",
+        description: "Could not retrieve blog posts. Please try again later.",
+        variant: "destructive",
+      });
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [firestore, toast]);
+
 
   const handleLogout = () => {
     if (auth) {
@@ -76,7 +91,13 @@ export default function Home() {
       </aside>
 
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <BlogView posts={staticPosts} />
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader className="h-12 w-12" />
+          </div>
+        ) : (
+          <BlogView posts={posts} />
+        )}
       </main>
     </div>
   );
