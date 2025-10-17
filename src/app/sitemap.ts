@@ -1,7 +1,5 @@
 import { MetadataRoute } from 'next'
 import { categories } from '@/lib/categories';
-import { adminDb } from '@/lib/firebase-admin';
-import type { BlogPost } from '@/lib/types';
  
 const URL = 'https://blogify.blog';
 
@@ -47,25 +45,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   })) satisfies MetadataRoute.Sitemap;
 
-  let postPages: MetadataRoute.Sitemap = [];
-  try {
-    const postsSnapshot = await adminDb.collection('blog_posts').where('isPublished', '==', true).get();
-    postPages = postsSnapshot.docs.map(doc => {
-      const post = doc.data() as BlogPost;
-      return {
-        url: `${URL}/#${doc.id}`,
-        lastModified: post.updatedAt ? post.updatedAt.toDate() : new Date(),
-        changeFrequency: 'weekly',
-        priority: 0.9,
-      };
-    });
-  } catch (error) {
-    console.error("Failed to fetch blog posts for sitemap:", error);
-  }
-
   return [
     ...staticPages,
     ...categoryPages,
-    ...postPages,
   ];
 }
