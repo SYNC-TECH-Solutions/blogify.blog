@@ -10,8 +10,7 @@ import BlogView from '@/components/blog/BlogView';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
 
-const app_id: string = (globalThis as any).__app_id || 'blogify-cms-app-local';
-const postsCollectionPath = `/artifacts/${app_id}/public/data/blog_posts`;
+const postsCollectionPath = 'blog_posts';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);

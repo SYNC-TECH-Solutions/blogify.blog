@@ -32,8 +32,7 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
-const app_id: string = (globalThis as any).__app_id || 'blogify-cms-app-local';
-const postsCollectionPath = `/artifacts/${app_id}/public/data/blog_posts`;
+const postsCollectionPath = 'blog_posts';
 
 export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
