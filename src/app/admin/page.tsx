@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
 
-const postsCollectionPath = 'blog_posts';
+const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null);

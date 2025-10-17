@@ -15,12 +15,12 @@ import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { categories } from '@/lib/categories';
 
-const postsCollectionPath = 'blog_posts';
+const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
 export default function CategoryPage() {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug;
-  const decodedSlug = slug ? decodeURIComponent(slug) : '';
+  const decodedSlug = slug ? decodeURIComponent(slug.replace(/%26/g, '&')) : '';
   
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);

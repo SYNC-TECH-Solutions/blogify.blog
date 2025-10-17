@@ -41,7 +41,7 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
-const postsCollectionPath = 'blog_posts';
+const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
 export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -289,5 +289,3 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     </div>
   );
 }
-
-    
