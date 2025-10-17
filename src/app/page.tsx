@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
-const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
+const postsCollectionPath = 'blog_posts';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -38,7 +38,6 @@ export default function Home() {
     const q = query(
       postsCollection, 
       where('isPublished', '==', true),
-      orderBy('isPublished', 'desc'),
       orderBy('createdAt', 'desc')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {

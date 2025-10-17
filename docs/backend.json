@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "BlogPost": {
@@ -81,28 +82,11 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/artifacts/{appId}/public/data/blog_posts/{blogPostId}",
-        "definition": {
-          "entityName": "BlogPost",
-          "schema": {
-            "$ref": "#/backend/entities/BlogPost"
-          },
-          "description": "Collection of blog posts.  The 'authorId' field must match the authenticated user's UID for write access. Read access is public.",
-          "params": [
-            {
-              "name": "appId",
-              "description": "The application ID.  Corresponds to the '__app_id' environment variable."
-            },
-            {
-              "name": "blogPostId",
-              "description": "The unique identifier for the blog post."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "To address the FirestorePermissionError and ensure secure data access, the structure focuses on path-based ownership for blog posts.  The `blog_posts` collection is located under a path incorporating the app ID to prevent conflicts and ensure proper data scoping. Authorization Independence is achieved because writes are restricted to only authenticated users, and read access is granted to anyone to fulfill the real-time blog display requirement. All blog posts within this collection inherit the same security posture (public read, author-only write/delete). This prevents mixing data with varying access control needs within the same collection, simplifying the security rules. This structure directly supports the required QAPs (list operation allowed for all, and writes are allowed for the admin)."
+    "/blog_posts/{blogPostId}": {
+      "schema": {
+        "$ref": "#/entities/BlogPost"
+      },
+      "description": "Collection of blog posts. The 'authorId' field must match the authenticated user's UID for write access. Read access is public."
+    }
   }
 }
