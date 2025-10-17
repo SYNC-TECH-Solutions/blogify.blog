@@ -1,10 +1,11 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/blog/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail } from 'lucide-react';
+import { Mail, Rocket, Volume2, Globe } from 'lucide-react';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -53,38 +54,64 @@ export default function ContactPage() {
               )}
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                 <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight text-center px-4">
-                  Get in Touch
+                  Partner With Us
                 </h1>
               </div>
             </div>
             <CardContent className="p-6 md:p-8 text-center">
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                We'd love to hear from you! Whether you have a question, a business inquiry, or a story you think the world needs to hear, our inbox is always open.
+                Your story deserves a global audience. Your brand needs a launchpad. At Blogify, we build the stage and shine the spotlight. Let's create something powerful together.
               </p>
             </CardContent>
           </Card>
-
-          <div className="flex justify-center">
-            <Card className="bg-secondary border-none max-w-2xl w-full">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-center">Email Us Directly</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-muted-foreground text-center">
-                <p>
-                  For the fastest response, please send us an email. Click the button below to open your default email client and start a conversation.
-                </p>
-                <p>
-                  We welcome feedback, collaboration proposals, and submissions from new and established writers. Let's connect and create something amazing together.
-                </p>
-                <a href="mailto:sherazhussainofficial1@gmail.com">
-                  <Button size="lg" className="w-full sm:w-auto">
+          
+          <div className="text-center">
+             <a href="mailto:sherazhussainofficial1@gmail.com">
+                <Button size="lg">
                     <Mail className="mr-2 h-5 w-5" />
-                    Send an Email
-                  </Button>
-                </a>
+                    Start the Conversation
+                </Button>
+            </a>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            <Card>
+              <CardHeader>
+                <div className="mx-auto bg-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center">
+                   <Globe className="h-8 w-8" />
+                </div>
+                <CardTitle className="pt-4">Our Mission</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                <p>We're dedicated to creating a single, dynamic space where the world can discover content on any topic. By connecting with us, you become part of this growing universe of ideas.</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                 <div className="mx-auto bg-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center">
+                   <Rocket className="h-8 w-8" />
+                </div>
+                <CardTitle className="pt-4">A Paradise for Startups</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                <p>Getting noticed is your biggest challenge. We make it our mission. Email us to see how we can feature your startup, boost your SEO, and connect you with a global audience eager for innovation.</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                 <div className="mx-auto bg-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center">
+                   <Volume2 className="h-8 w-8" />
+                </div>
+                <CardTitle className="pt-4">Amplify Public Voices</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                <p>Have a story to tell or expertise to share? We provide the megaphone. Reach out to contribute your voice to our platform and engage with readers from all walks of life.</p>
               </CardContent>
             </Card>
           </div>
+
         </div>
       </main>
     </div>
