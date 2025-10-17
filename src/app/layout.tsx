@@ -1,7 +1,9 @@
 import type {Metadata} from 'next';
+import Link from 'next/link';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'Blogify',
@@ -20,10 +22,19 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased h-full">
+      <body className="font-body antialiased h-full flex flex-col">
         <FirebaseClientProvider>
-          {children}
+          <div className="flex-grow">
+            {children}
+          </div>
         </FirebaseClientProvider>
+        <footer className="py-4 border-t">
+          <div className="container mx-auto flex justify-center items-center">
+            <Button variant="link" asChild>
+              <Link href="/admin">Admin Portal Login</Link>
+            </Button>
+          </div>
+        </footer>
         <Toaster />
       </body>
     </html>
