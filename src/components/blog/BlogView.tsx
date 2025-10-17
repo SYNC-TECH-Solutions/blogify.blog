@@ -11,6 +11,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import ReactMarkdown from 'react-markdown';
 import { Share2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import React from 'react';
 
 interface BlogViewProps {
   posts: BlogPost[];
@@ -82,34 +83,36 @@ export default function BlogView({ posts }: BlogViewProps) {
         </Card>
       ) : (
         <div className="grid gap-8 grid-cols-1">
-          {posts.map(post => (
-            <Card key={post.id} id={post.id} className="flex flex-col scroll-mt-20 bg-accent/20">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-                    <span>Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}</span>
-                    {post.category && <Badge variant="secondary">{post.category}</Badge>}
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <ReactMarkdown>{post.content}</ReactMarkdown>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between items-center mt-auto">
-                <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
-                <Button variant="ghost" size="icon" onClick={() => handleShare(post)}>
-                  <Share2 className="h-5 w-5" />
-                  <span className="sr-only">Share Post</span>
-                </Button>
-              </CardFooter>
-            </Card>
+          {posts.map((post, index) => (
+            <React.Fragment key={post.id}>
+              <Card id={post.id} className="flex flex-col scroll-mt-20 bg-accent/20">
+                <CardHeader>
+                  <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                      <span>Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}</span>
+                      {post.category && <Badge variant="secondary">{post.category}</Badge>}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                    <ReactMarkdown>{post.content}</ReactMarkdown>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between items-center mt-auto">
+                  <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
+                  <Button variant="ghost" size="icon" onClick={() => handleShare(post)}>
+                    <Share2 className="h-5 w-5" />
+                    <span className="sr-only">Share Post</span>
+                  </Button>
+                </CardFooter>
+              </Card>
+              <div className="md:hidden w-full h-64 bg-muted/40 flex items-center justify-center rounded-lg">
+                <p className="text-muted-foreground">Ad Placeholder</p>
+              </div>
+            </React.Fragment>
           ))}
         </div>
       )}
     </div>
   );
 }
-
-
-
