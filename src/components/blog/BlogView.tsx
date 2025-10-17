@@ -3,10 +3,13 @@
 import { BlogPost } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import ReactMarkdown from 'react-markdown';
+import { Share2 } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface BlogViewProps {
   posts: BlogPost[];
@@ -14,6 +17,38 @@ interface BlogViewProps {
 
 export default function BlogView({ posts }: BlogViewProps) {
   const headerImage = PlaceHolderImages.find(img => img.id === 'blog-header');
+  const { toast } = useToast();
+
+  const handleShare = async (post: BlogPost) => {
+    const postUrl = `${window.location.origin}/#${post.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: `Check out this blog post: ${post.title}`,
+          url: postUrl,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        toast({
+          title: "Link Copied!",
+          description: "The post link has been copied to your clipboard.",
+        });
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        toast({
+          title: "Error",
+          description: "Could not copy link to clipboard.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
 
   return (
     <div className="space-y-8">
@@ -44,7 +79,7 @@ export default function BlogView({ posts }: BlogViewProps) {
       ) : (
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1">
           {posts.map(post => (
-            <Card key={post.id} className="flex flex-col">
+            <Card key={post.id} id={post.id} className="flex flex-col scroll-mt-20">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -57,8 +92,12 @@ export default function BlogView({ posts }: BlogViewProps) {
                   <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex justify-between items-center">
                 <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
+                <Button variant="ghost" size="icon" onClick={() => handleShare(post)}>
+                  <Share2 className="h-5 w-5" />
+                  <span className="sr-only">Share Post</span>
+                </Button>
               </CardFooter>
             </Card>
           ))}
