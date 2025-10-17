@@ -65,7 +65,7 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
         <div className="flex items-center gap-1 border-b border-input p-2">
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('h2')} title="Heading"><Heading2 className="h-4 w-4" /></Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('bold')} title="Bold"><Bold className="h-4 w-4" /></Button>
-            <Button type="button" variant="ghost" size:="icon" onClick={() => applyFormat('italic')} title="Italic"><Italic className="h-4 w-4" /></Button>
+            <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('italic')} title="Italic"><Italic className="h-4 w-4" /></Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('list')} title="Bullet List"><List className="h-4 w-4" /></Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('link')} title="Link"><Link className="h-4 w-4" /></Button>
         </div>
