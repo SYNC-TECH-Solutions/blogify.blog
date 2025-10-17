@@ -6,24 +6,6 @@ import { categories } from "@/lib/categories";
 import { Separator } from "@/components/ui/separator";
 
 export default function Footer() {
-    const BloggerIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M14 11h2v2h-2z" />
-      <path d="M18 11h2v2h-2z" />
-      <path d="M18 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM8 11H6v2h2v-2zm0 4H6v2h2v-2zm8-4h-2v2h2v-2zm0 4h-2v2h2v-2z" />
-    </svg>
-    );
     return (
         <footer className="bg-card border-t text-card-foreground">
             <div className="container mx-auto px-4 py-8">
@@ -65,7 +47,7 @@ export default function Footer() {
                             <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6" /></Link>
                             <Link href="#" className="text-muted-foreground hover:text-primary"><Instagram className="h-6 w-6" /></Link>
                             <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter className="h-6 w-6" /></Link>
-                            <Link href="#" className="text-muted-foreground hover:text-primary"><BloggerIcon className="h-6 w-6" /></Link>
+                            <Link href="#" className="text-muted-foreground hover:text-primary"><Rss className="h-6 w-6" /></Link>
                         </div>
                     </div>
                 </div>
