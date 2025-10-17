@@ -115,7 +115,7 @@ export default function AboutPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-base text-muted-foreground">
                            <p>
-                                Blogify was founded by the **SS Brothers**, a team of forward-thinkers passionate about leveraging new technologies to empower people around the world. With roots in the vibrant city of lights, Karachi, Pakistan, Blogify is a fully remote company with a global mindset.
+                                Blogify was founded by the <strong>SS Brothers</strong>, a team of forward-thinkers passionate about leveraging new technologies to empower people around the world. With roots in the vibrant city of lights, Karachi, Pakistan, Blogify is a fully remote company with a global mindset.
                            </p>
                            <p>
                                 Our team is driven by a shared commitment to staying at the forefront of the new era, constantly exploring innovative ways to help individuals and businesses thrive. We believe that a great idea can come from anywhere, and our mission is to ensure it can be heard everywhere.
