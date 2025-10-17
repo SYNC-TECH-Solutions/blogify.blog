@@ -1,5 +1,7 @@
 export const categories = [
-    "Energy", "Materials", "Industrials", "Consumer Discretionary",
-    "Consumer Staples", "Health Care", "Financials",
-    "Information Technology", "Communication Services", "Utilities", "Real Estate"
+    "Sports",
+    "Movies & TV",
+    "Life",
+    "Tech",
+    "Fitness & Health"
 ];
