@@ -2,7 +2,7 @@
 
 import { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { BookOpen, LogIn, LogOut, UserCircle, LayoutDashboard, Menu } from "lucide-react";
+import { BookOpen, LogOut, UserCircle, LayoutDashboard, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Link from "next/link";
+import { categories } from "@/lib/categories";
 
 interface HeaderProps {
   user: User | null;
@@ -23,10 +31,30 @@ export default function Header({ user, onLogout }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container mx-auto grid h-16 grid-cols-3 items-center px-4">
         <div className="flex justify-start">
-          <Button variant="ghost" size="icon">
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Menu</span>
-          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+                <SheetTitle>Categories</SheetTitle>
+              </SheetHeader>
+              <nav className="mt-4">
+                <ul className="space-y-2">
+                  {categories.map(category => (
+                    <li key={category}>
+                      <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                        {category}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
 
         <div className="flex justify-center">

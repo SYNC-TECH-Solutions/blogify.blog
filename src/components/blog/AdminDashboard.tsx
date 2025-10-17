@@ -17,22 +17,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import ContentEditor from './ContentEditor';
+import { categories } from '@/lib/categories';
 
 interface AdminDashboardProps {
   posts: BlogPost[];
   user: User;
 }
-
-const categories = [
-    "Energy", "Materials", "Industrials", "Consumer Discretionary",
-    "Consumer Staples", "Health Care", "Financials",
-    "Information Technology", "Communication Services", "Utilities", "Real Estate"
-];
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
@@ -205,7 +200,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <ContentEditor {...field} />
+                      <Textarea placeholder="Write your blog post here..." className="min-h-[400px]" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
