@@ -24,7 +24,7 @@ export default function Footer() {
                         <ul className="space-y-2">
                             {categories.map(category => (
                                 <li key={category}>
-                                    <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="text-sm text-muted-foreground hover:text-primary">
+                                    <Link href={`/category/${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`} className="text-sm text-muted-foreground hover:text-primary">
                                         {category}
                                     </Link>
                                 </li>

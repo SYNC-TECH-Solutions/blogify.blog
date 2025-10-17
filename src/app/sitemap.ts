@@ -39,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ] satisfies MetadataRoute.Sitemap;
 
   const categoryPages = categories.map((category) => ({
-    url: `${URL}/category/${category.toLowerCase().replace(/ /g, '-')}`,
+    url: `${URL}/category/${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: 0.6,

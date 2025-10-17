@@ -52,7 +52,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   <ul className="space-y-2">
                     {categories.map(category => (
                       <li key={category}>
-                        <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                        <Link href={`/category/${category.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
                           {category}
                         </Link>
                       </li>
