@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { onSnapshot, query, where, collection, orderBy } from 'firebase/firestore';
+import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import BlogView from '@/components/blog/BlogView';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader } from '@/components/ui/loader';
-import Header from '@/components/blog/Header'; // Assuming you might want the header here too
+import Header from '@/components/blog/Header';
 import { useAuth } from '@/firebase';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -44,8 +44,7 @@ export default function CategoryPage() {
     const postsCollection = collection(firestore, postsCollectionPath);
     const q = query(
       postsCollection, 
-      where('category', '==', category),
-      orderBy('createdAt', 'desc')
+      where('category', '==', category)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -53,7 +52,15 @@ export default function CategoryPage() {
         id: doc.id,
         ...doc.data(),
       } as BlogPost));
-      setPosts(postsData);
+      
+      // Sort posts by date on the client side
+      const sortedPosts = postsData.sort((a, b) => {
+        const dateA = a.createdAt?.toDate()?.getTime() || 0;
+        const dateB = b.createdAt?.toDate()?.getTime() || 0;
+        return dateB - dateA;
+      });
+
+      setPosts(sortedPosts);
       setLoading(false);
     }, (error) => {
       console.error("Error fetching category posts:", error);
