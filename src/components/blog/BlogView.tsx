@@ -1,7 +1,7 @@
 "use client";
 
 import { BlogPost } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -54,6 +54,9 @@ export default function BlogView({ posts }: BlogViewProps) {
                   {post.content}
                 </div>
               </CardContent>
+              <CardFooter>
+                <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
+              </CardFooter>
             </Card>
           ))}
         </div>

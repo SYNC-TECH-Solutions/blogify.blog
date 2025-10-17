@@ -79,6 +79,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         await addDoc(postsCollection, {
           ...data,
           authorId: user.uid,
+          authorName: user.displayName || 'Admin',
           isPublished: true,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
