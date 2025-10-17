@@ -31,6 +31,8 @@ export default function Home() {
       setUser(currentUser);
       if (currentUser && window.location.pathname === '/admin') {
         setViewMode('admin');
+      } else if (!currentUser) {
+        setViewMode('blog');
       }
     });
     return () => unsubscribeAuth();
@@ -64,12 +66,12 @@ export default function Home() {
     if (window.location.pathname === '/admin' && !user) {
       setIsLoginModalOpen(true);
     }
-  }, [user]);
+  }, [user, router]);
 
   const handleAdminLoginSuccess = () => {
     setViewMode('admin');
     setIsLoginModalOpen(false);
-    router.push('/');
+    // router.push('/'); // Don't push to home, stay on the page which will now show admin view
   };
   
   const handleLoginModalClose = () => {
@@ -87,11 +89,20 @@ export default function Home() {
     }
   };
 
+  const handleLogout = () => {
+    if (auth) {
+      auth.signOut();
+      setViewMode('blog');
+      router.push('/');
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header 
         user={user}
         onAdminLoginClick={() => handleSwitchView('admin')}
+        onLogout={handleLogout}
         viewMode={viewMode}
         onSwitchView={handleSwitchView}
       />

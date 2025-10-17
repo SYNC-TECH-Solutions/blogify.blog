@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '@/firebase';
 
 interface AdminLoginModalProps {
   isOpen: boolean;
@@ -21,28 +23,44 @@ interface AdminLoginModalProps {
   onLoginSuccess: () => void;
 }
 
-const ADMIN_PASSWORD = "secretadmin123";
-
 export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: AdminLoginModalProps) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setError('');
-      setPassword('');
+    if (!auth) {
+      setError("Authentication service is not available.");
+      return;
+    }
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       onLoginSuccess();
-    } else {
-      setError("Invalid password. Please try again.");
+      resetForm();
+    } catch (err: any) {
+      setError(err.message || "Failed to log in. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setError('');
+    setIsLoading(false);
+  }
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       onClose();
-      setError('');
-      setPassword('');
+      resetForm();
     }
   }
 
@@ -51,12 +69,24 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleLogin}>
           <DialogHeader>
-            <DialogTitle>Admin Access</DialogTitle>
+            <DialogTitle>Admin Login</DialogTitle>
             <DialogDescription>
-              Enter the password to access the admin dashboard.
+              Enter your credentials to access the admin dashboard.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid w-full items-center gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@example.com"
+                required
+                disabled={isLoading}
+              />
+            </div>
             <div className="grid w-full items-center gap-1.5">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -66,6 +96,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="************"
                 required
+                disabled={isLoading}
               />
             </div>
             {error && (
@@ -76,8 +107,10 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }: Adm
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit">Login</Button>
+            <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>Cancel</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Logging in...' : 'Login'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
