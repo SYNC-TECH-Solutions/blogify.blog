@@ -1,9 +1,7 @@
 import type {Metadata} from 'next';
-import Link from 'next/link';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'Blogify',
@@ -28,13 +26,6 @@ export default function RootLayout({
             {children}
           </div>
         </FirebaseClientProvider>
-        <footer className="py-4 border-t">
-          <div className="container mx-auto flex justify-center items-center">
-            <Button variant="link" asChild>
-              <Link href="/admin">Admin Portal Login</Link>
-            </Button>
-          </div>
-        </footer>
         <Toaster />
       </body>
     </html>
