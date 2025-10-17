@@ -54,6 +54,7 @@ export default function CategoryPage() {
       postsCollection, 
       where('category', '==', category),
       where('isPublished', '==', true),
+      orderBy('isPublished', 'desc'),
       orderBy('createdAt', 'desc')
     );
 

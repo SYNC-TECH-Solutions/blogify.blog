@@ -38,6 +38,7 @@ export default function Home() {
     const q = query(
       postsCollection, 
       where('isPublished', '==', true),
+      orderBy('isPublished', 'desc'),
       orderBy('createdAt', 'desc')
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
