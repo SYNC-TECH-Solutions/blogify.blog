@@ -17,7 +17,7 @@ import { categories } from '@/lib/categories';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
-const postsCollectionPath = 'blog_posts';
+const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
 export default function CategoryPage() {
   const params = useParams();
