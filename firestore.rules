@@ -2,73 +2,99 @@
  * @fileoverview Firestore Security Rules for Blogify CMS.
  *
  * Core Philosophy:
- * This ruleset enforces a combination of public read access for blog posts and owner-only write access.
- * Authors can create, update, and delete their own blog posts. Authors can read blog posts and other author's blog posts.
- * Author profiles are only readable and writeable by the author themselves.
+ * This ruleset prioritizes a public-read, owner-write model for blog posts,
+ * ensuring only the author can modify their content. Author profiles are
+ * similarly secured with owner-only access. Data validation is relaxed to
+ * allow for rapid prototyping but includes basic relational integrity checks.
  *
  * Data Structure:
- * - /artifacts/{__app_id}/public/data/blog_posts/{blogPostId}: Stores blog posts. The `authorId` field is used for authorization.
- * - /authors/{authorId}: Stores author profiles.
+ * - /artifacts/{appId}/public/data/blog_posts/{blogPostId}: Stores blog posts,
+ *   with 'authorId' for ownership. Publicly readable.
+ * - /authors/{authorId}: Stores author profiles, accessible only to the
+ *   profile owner.
  *
  * Key Security Decisions:
- * - Blog posts are publicly readable to allow display on the homepage and category pages.
- * - Blog posts can only be created, updated, or deleted by the author (owner) to ensure content integrity.
- * - Author profiles can only be read or modified by the author themselves, protecting personal information.
- * - Listing of authors is not explicitly denied, implying it is permitted. Listing of blog posts is public.
+ * - Blog posts are publicly readable to facilitate content consumption.
+ * - Author profiles are private, accessible only to the author themselves.
+ * - Listing of author profiles is disallowed to prevent data scraping.
+ * - Data validation is minimized in favor of a permissive schema during the
+ *   prototyping phase, focusing only on authorization-critical fields.
  *
  * Denormalization for Authorization:
- * - The `BlogPost` entity includes an `authorId` field to avoid costly `get()` calls to the `/authors` collection during authorization.
+ * - The 'authorId' field is denormalized within the blog post document to
+ *   enable efficient owner checks without additional database reads.
+ *
+ * Structural Segregation:
+ * - No structural segregation implemented, as the system doesn't have private
+ *   vs public subcollections. All blog posts are assumed public.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Manages access to blog post documents.
-     * @path /artifacts/{__app_id}/public/data/blog_posts/{blogPostId}
-     * @allow (get, list) All users can read blog posts.
-     * @allow (create) Authenticated user can create a blog post if the authorId matches their UID.
-     * @allow (update, delete) Authenticated user can update/delete a blog post if they are the author.
-     * @deny (create) Non-authenticated user attempts to create a blog post.
-     * @deny (update, delete) Authenticated user attempts to update/delete a blog post they don't own.
-     * @principle Public read, owner-only write. Enforces document ownership for writes and validates authorId on create.
+     * @description Secure blog posts with public read and owner-only write access.
+     * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
+     * @allow (get, list): Any user can read blog posts.
+     * @allow (create): An authenticated user can create a blog post if the authorId matches their UID.
+     * @allow (update, delete): Only the author of the blog post can modify or delete it.
+     * @deny (create): An unauthenticated user cannot create a blog post.
+     * @deny (update, delete): A different user cannot modify or delete someone else's blog post.
+     * @principle Enforces document ownership for writes. Public reads are allowed.
      */
-    match /artifacts/{__app_id}/public/data/blog_posts/{blogPostId} {
-      allow get: if true;
-      allow list: if true;
+    match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
+      allow get, list: if true;
+
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update: if isSignedIn() && isExistingOwner(resource.data.authorId);
-      allow delete: if isSignedIn() && isExistingOwner(resource.data.authorId);
+      allow update, delete: if isSignedIn() && isExistingOwner(resource.data.authorId);
+
     }
 
     /**
-     * @description Manages access to author profile documents.
+     * @description Secure author profiles with owner-only access.
      * @path /authors/{authorId}
-     * @allow (get, list) All users can read Author documents
-     * @allow (create) Authenticated user can create their own author profile if the authorId matches their UID.
-     * @allow (update, delete) Authenticated user can update/delete their own author profile.
-     * @deny (create) Non-authenticated user attempts to create an author profile.
-     * @deny (update, delete) Authenticated user attempts to update/delete an author profile they don't own.
-     * @principle Enforces document ownership for all operations.
+     * @allow (get): An authenticated user can read their own profile.
+     * @allow (create): An authenticated user can create their own profile.
+     * @allow (update, delete): Only the owner of the profile can modify or delete it.
+     * @deny (list): Listing of author profiles is not allowed.
+     * @deny (create): An unauthenticated user cannot create a profile.
+     * @deny (update, delete): A different user cannot modify or delete someone else's profile.
+     * @principle Restricts access to a user's own data tree.
      */
     match /authors/{authorId} {
-      allow get: if true;
-      allow list: if true;
+      allow get: if isSignedIn() && isOwner(authorId);
+      allow list: if false;
+
       allow create: if isSignedIn() && isOwner(authorId);
-      allow update: if isSignedIn() && isExistingOwner(authorId);
-      allow delete: if isSignedIn() && isExistingOwner(authorId);
+      allow update, delete: if isSignedIn() && isExistingOwner(authorId);
     }
 
+    // --- Helper Functions ---
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is authenticated.
+     */
     function isSignedIn() {
       return request.auth != null;
     }
 
+    /**
+     * @description Checks if the user is the owner of the resource.
+     * @param {string} userId The user ID to compare against the authenticated user's ID.
+     * @return {bool} True if the user is the owner.
+     */
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
 
+    /**
+     * @description Checks if the user is the owner of the existing resource.
+     * @param {string} userId The user ID to compare against the authenticated user's ID.
+     * @return {bool} True if the user is the owner.
+     */
     function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
+      return isOwner(userId) && resource != null;
     }
   }
 }

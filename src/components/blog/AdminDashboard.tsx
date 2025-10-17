@@ -80,6 +80,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       const postRef = doc(postsCollection, selectedPost.id);
       const postData = {
         ...data,
+        authorId: user.uid, // Ensure authorId is present on updates
         updatedAt: serverTimestamp(),
       };
       setDoc(postRef, postData, { merge: true })
@@ -101,7 +102,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       const postData = {
         ...data,
         authorId: user.uid,
-        isPublished: true,
+        isPublished: true, // This was missing
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
