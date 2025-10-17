@@ -95,7 +95,17 @@ export default function BlogView({ posts }: BlogViewProps) {
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <ReactMarkdown>{post.content}</ReactMarkdown>
+                    <ReactMarkdown
+                      components={{
+                        img: ({node, ...props}) => {
+                          if (!props.src) return null;
+                          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+                          return <img {...props} />;
+                        },
+                      }}
+                    >
+                        {post.content}
+                    </ReactMarkdown>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between items-center mt-auto">
