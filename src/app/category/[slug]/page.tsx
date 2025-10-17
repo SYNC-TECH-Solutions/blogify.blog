@@ -14,6 +14,8 @@ import { useAuth } from '@/firebase';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { categories } from '@/lib/categories';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const postsCollectionPath = 'blog_posts';
 
@@ -67,7 +69,11 @@ export default function CategoryPage() {
       setPosts(postsData);
       setLoading(false);
     }, (error) => {
-      console.error("Error fetching category posts:", error);
+      const permissionError = new FirestorePermissionError({
+        path: (q as any)._query.path.toString(),
+        operation: 'list',
+      });
+      errorEmitter.emit('permission-error', permissionError);
       setLoading(false);
     });
 

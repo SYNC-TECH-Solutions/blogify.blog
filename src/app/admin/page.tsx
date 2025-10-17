@@ -12,6 +12,8 @@ import AdminLoginModal from '@/components/blog/AdminLoginModal';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const postsCollectionPath = 'blog_posts';
 
@@ -53,12 +55,11 @@ export default function AdminPage() {
       } as BlogPost));
       setPosts(postsData);
     }, (error) => {
-      console.error("Firestore Error:", error);
-      toast({
-        title: "Error Fetching Posts",
-        description: "Could not retrieve blog posts from the database.",
-        variant: "destructive",
+      const permissionError = new FirestorePermissionError({
+        path: (q as any)._query.path.toString(),
+        operation: 'list',
       });
+      errorEmitter.emit('permission-error', permissionError);
     });
 
     return () => unsubscribe();
