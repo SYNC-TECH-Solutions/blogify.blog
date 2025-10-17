@@ -70,14 +70,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
-            <Button asChild size="sm">
-              <Link href="/admin">
-                <LogIn className="mr-2 h-4 w-4" />
-                Admin Login
-              </Link>
-            </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </header>
