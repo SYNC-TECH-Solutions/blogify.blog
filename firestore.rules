@@ -1,60 +1,51 @@
 /**
- * @fileoverview Firestore Security Rules for Prototyping.
+ * @file Firebase Security Rules for Firestore.
  *
- * Core Philosophy:
- * This ruleset prioritizes rapid prototyping by focusing on authorization and skipping schema enforcement.
- * It provides a secure foundation while allowing for flexible data shapes during development.
- *
- * Data Structure:
- * Blog posts are stored in the `/artifacts/{appId}/public/data/blog_posts/{blogPostId}` collection.
- *  - `appId`: Represents the application ID.
- *  - `blogPostId`: Unique identifier for the blog post.
- *
- * Key Security Decisions:
- * - Read access to blog posts is public (get, list).
- * - Write access (create, update, delete) is restricted to the author of the blog post. The 'authorId' field in the blog post document must match the authenticated user's UID.
- * - Data consistency for blog posts is enforced by ensuring that the `authorId` field matches the authenticated user's UID when creating a blog post. On update, the `authorId` field is immutable.
- * - The rules explicitly deny any unauthorized operations, such as creating, updating, or deleting blog posts by users other than the author.
- *
- * Denormalization for Authorization:
- * The ruleset relies on the 'authorId' field within each 'blog_post' document to determine ownership. This avoids costly `get()` operations to a separate `/users/{userId}` document.
+ * @core_philosophy This ruleset implements a public read, owner-write model for blog posts. Any authenticated user can read any blog post, but only the author can create, update, or delete their own posts.
+ * @data_structure The primary data is stored in the `/artifacts/{appId}/public/data/blog_posts/{postId}` collection. Each blog post document contains metadata including the author's ID (`authorId`).
+ * @key_security_decisions
+ *   - Public Read: Blog posts are publicly readable.
+ *   - Owner-Only Writes: Only the author can create, update, or delete a blog post.
+ *   - Author ID Enforcement: The `authorId` field in the blog post must match the authenticated user's UID upon creation. Updates and deletes are also restricted to the original author.
+ * @denormalization_for_authorization The `authorId` field is used to authorize write operations. This avoids the need for additional reads to determine ownership.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows public read access to blog posts and restricts write access to the author.
+     * @description Grants public read access to blog posts and restricts write access to the author.
      * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
-     * @allow (get, list): Any user can read blog posts.
-     * @allow (create): User with UID 'user123' can create a blog post with 'authorId': 'user123'.
-     * @allow (update, delete): User with UID 'user123' can update or delete a blog post where 'authorId' is 'user123'.
-     * @deny (create): User with UID 'user456' cannot create a blog post with 'authorId': 'user123'.
-     * @deny (update, delete): User with UID 'user456' cannot update or delete a blog post where 'authorId' is 'user123'.
-     * @principle Enforces document ownership for writes; allows public reads.
+     * @allow (get, list): Any authenticated user can read blog posts.
+     * @allow (create): An authenticated user can create a blog post if the authorId matches their UID.
+     * @allow (update, delete): Only the author of the blog post can update or delete it.
+     * @deny (create): An unauthenticated user cannot create a blog post.
+     * @deny (update, delete): A user cannot update or delete a blog post they did not author.
+     * @principle Public read, owner-only writes.
      */
     match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
-      // Helpers
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(authorId) {
-        return isSignedIn() && request.auth.uid == authorId;
-      }
-
-      function isExistingOwner(authorId) {
-        return isOwner(authorId) && resource != null;
-      }
-
-      // Read rules: public read
-      allow get: if true;
-      allow list: if true;
-
-      // Write rules: owner-only writes
+      allow get, list: if true;
       allow create: if isSignedIn() && request.resource.data.authorId == request.auth.uid;
-      allow update: if isExistingOwner(resource.data.authorId) && request.resource.data.authorId == resource.data.authorId;
-      allow delete: if isExistingOwner(resource.data.authorId);
+      allow update, delete: if isExistingOwner(resource.data.authorId);
+    }
+
+    // --- Helper functions ---
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document based on the provided user ID and that the resource exists.
+     * @param {string} userId The user ID to check against.
+     * @return {boolean} True if the user is the owner and the resource exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId && resource != null;
     }
   }
 }
