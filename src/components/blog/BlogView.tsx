@@ -85,7 +85,7 @@ export default function BlogView({ posts }: BlogViewProps) {
         <div className="grid gap-8 grid-cols-1">
           {posts.map((post, index) => (
             <React.Fragment key={post.id}>
-              <Card id={post.id} className="flex flex-col scroll-mt-20 bg-accent/20">
+              <Card id={post.id} className="flex flex-col scroll-mt-20 bg-primary/10">
                 <CardHeader>
                   <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
