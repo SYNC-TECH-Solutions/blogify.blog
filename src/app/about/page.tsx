@@ -1,3 +1,4 @@
+"use client";
 
 import Header from '@/components/blog/Header';
 import { Card, CardContent } from '@/components/ui/card';
