@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import ReactMarkdown from 'react-markdown';
 
 interface BlogViewProps {
   posts: BlogPost[];
@@ -50,8 +51,8 @@ export default function BlogView({ posts }: BlogViewProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow">
-                <div className="prose prose-lg dark:prose-invert max-w-none whitespace-pre-wrap">
-                  {post.content}
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
               </CardContent>
               <CardFooter>
