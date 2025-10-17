@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import ContentEditor from './ContentEditor';
@@ -27,10 +28,19 @@ interface AdminDashboardProps {
   user: User;
 }
 
+const categories = [
+    "Energy", "Materials", "Industrials", "Consumer Discretionary",
+    "Consumer Staples", "Health Care", "Financials",
+    "Information Technology", "Communication Services", "Utilities", "Real Estate"
+];
+
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
   content: z.string().min(1, 'Content is required'),
   authorName: z.string().min(1, 'Author Name is required'),
+  category: z.enum(categories as [string, ...string[]], {
+    required_error: "You need to select a category.",
+  }),
 });
 
 type PostFormData = z.infer<typeof postSchema>;
@@ -55,9 +65,10 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         title: selectedPost.title,
         content: selectedPost.content,
         authorName: selectedPost.authorName,
+        category: selectedPost.category,
       });
     } else {
-      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin' });
+      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined });
     }
   }, [selectedPost, form, user.displayName]);
 
@@ -161,6 +172,28 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                     <FormControl>
                       <Input placeholder="Your Post Title" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map(category => (
+                            <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

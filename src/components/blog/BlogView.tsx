@@ -2,6 +2,7 @@
 
 import { BlogPost } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -46,9 +47,10 @@ export default function BlogView({ posts }: BlogViewProps) {
             <Card key={post.id} className="flex flex-col">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
-                <CardDescription>
-                  Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}
-                </CardDescription>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}</span>
+                    {post.category && <Badge variant="secondary">{post.category}</Badge>}
+                </div>
               </CardHeader>
               <CardContent className="flex-grow">
                 <div className="prose prose-lg dark:prose-invert max-w-none">

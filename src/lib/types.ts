@@ -6,6 +6,7 @@ export interface BlogPost {
   content: string;
   authorId: string;
   authorName: string;
+  category: string;
   isPublished: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;

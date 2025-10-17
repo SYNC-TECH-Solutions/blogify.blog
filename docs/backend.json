@@ -21,6 +21,15 @@
           "type": "string",
           "description": "The display name of the author."
         },
+        "category": {
+            "type": "string",
+            "description": "The category of the blog post.",
+            "enum": [
+                "Energy", "Materials", "Industrials", "Consumer Discretionary",
+                "Consumer Staples", "Health Care", "Financials",
+                "Information Technology", "Communication Services", "Utilities", "Real Estate"
+            ]
+        },
         "isPublished": {
           "type": "boolean",
           "description": "Whether the post is visible to the public."
@@ -36,7 +45,7 @@
           "description": "The timestamp when the post was last updated."
         }
       },
-      "required": ["title", "content", "authorId", "isPublished", "createdAt"]
+      "required": ["title", "content", "authorId", "authorName", "category", "isPublished", "createdAt"]
     }
   },
   "auth": {
