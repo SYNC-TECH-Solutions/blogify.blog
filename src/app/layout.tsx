@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  openGraph: {
+    images: ['/blogifybanner.png'],
+  },
   other: {
     "google-adsense-account": "ca-pub-7334468000130380",
   },
