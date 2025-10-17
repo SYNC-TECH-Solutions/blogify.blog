@@ -84,7 +84,7 @@ export default function TermsConditionsPage() {
                         <h2 className="text-xl font-semibold text-foreground">8. Privacy</h2>
                         <ul className="list-disc list-inside space-y-2">
                             <li>We shall comply with all applicable data protection legislation from time to time in place in respect of any personal information relating to You gathered by Us.</li>
-                            <li>You may be asked to input information about yourself on different pages of the Blogify.blog Site. We will not use the information You provide to Us for any purpose t other than as stated at each location where such information is requested.</li>
+                            <li>You may be asked to input information about yourself on different pages of the Blogify.blog Site. We will not use the information You provide to Us for any purpose other than as stated at each location where such information is requested.</li>
                             <li>Please email <a href="mailto:sherazhussainofficial1@gmail.com">sherazhussainofficial1@gmail.com</a> to notify Us of any changes to the information You have previously given or if You wish to withdraw Your consent to Our using Your User Information for the stated purposes or for any form of promotional contact.</li>
                         </ul>
 
@@ -109,3 +109,5 @@ export default function TermsConditionsPage() {
         </div>
     );
 }
+
+    
