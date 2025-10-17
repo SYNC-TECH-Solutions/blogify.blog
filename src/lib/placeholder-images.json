@@ -3,8 +3,8 @@
     {
       "id": "blog-header",
       "description": "Abstract background for blog header",
-      "imageUrl": "https://picsum.photos/seed/blog-header/1200/300",
-      "imageHint": "abstract texture"
+      "imageUrl": "https://picsum.photos/seed/modern-workspace/1200/300",
+      "imageHint": "modern workspace"
     },
     {
       "id": "about-us-hero",
