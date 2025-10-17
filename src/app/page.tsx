@@ -48,8 +48,7 @@ export default function Home() {
         .map(doc => ({
           id: doc.id,
           ...doc.data(),
-        } as BlogPost))
-        .filter(post => post.isPublished); // Filter for published posts on the client
+        } as BlogPost));
       
       setPosts(postsData);
       setLoading(false);
