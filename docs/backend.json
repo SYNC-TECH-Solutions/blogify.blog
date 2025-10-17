@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "Represents a single blog post entry.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the blog post."
+        },
+        "content": {
+          "type": "string",
+          "description": "The main content of the blog post in Markdown format."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "The UID of the author."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "The display name of the author."
+        },
+        "isPublished": {
+          "type": "boolean",
+          "description": "Whether the post is visible to the public."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the post was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the post was last updated."
+        }
+      },
+      "required": ["title", "content", "authorId", "isPublished", "createdAt"]
+    }
+  },
+  "auth": {
+    "providers": ["email-password"]
+  },
+  "firestore": {
+    "/blog_posts/{postId}": {
+      "schema": {
+        "$ref": "#/entities/BlogPost"
+      },
+      "description": "A collection of blog posts."
+    }
+  }
+}
