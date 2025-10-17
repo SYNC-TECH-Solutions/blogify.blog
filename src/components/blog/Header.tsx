@@ -99,7 +99,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
           <Link href="/" className="flex items-center gap-3">
             <BookOpen className="h-7 w-7 text-primary" />
             <h1 className="text-2xl font-bold text-foreground">
-              Blogify<span className="text-primary text-xl">.blog</span>
+              Blogify<span className="text-primary text-lg">.blog</span>
             </h1>
           </Link>
         </div>
