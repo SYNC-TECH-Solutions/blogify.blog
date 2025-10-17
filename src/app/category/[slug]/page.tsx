@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useParams } from 'next/navigation';
 import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
@@ -18,7 +18,7 @@ import { categories } from '@/lib/categories';
 const postsCollectionPath = 'blog_posts';
 
 export default function CategoryPage() {
-  const params = useParams();
+  const params = use(useParams());
   const slug = params.slug as string;
   
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -45,7 +45,8 @@ export default function CategoryPage() {
     const postsCollection = collection(firestore, postsCollectionPath);
     const q = query(
       postsCollection, 
-      where('category', '==', category)
+      where('category', '==', category),
+      where('isPublished', '==', true)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
