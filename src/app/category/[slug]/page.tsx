@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
@@ -18,7 +18,7 @@ import { categories } from '@/lib/categories';
 const postsCollectionPath = 'blog_posts';
 
 export default function CategoryPage() {
-  const params = use(useParams());
+  const params = useParams();
   const slug = params.slug as string;
   
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -28,7 +28,7 @@ export default function CategoryPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
-  const category = categories.find(cat => cat.toLowerCase().replace(/ /g, '-') === slug);
+  const category = categories.find(cat => cat.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-') === slug);
 
   useEffect(() => {
     if (!auth) return;
