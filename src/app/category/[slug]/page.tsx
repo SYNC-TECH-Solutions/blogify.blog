@@ -19,7 +19,8 @@ const postsCollectionPath = 'blog_posts';
 
 export default function CategoryPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug;
+  const decodedSlug = slug ? decodeURIComponent(slug) : '';
   
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function CategoryPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
-  const category = categories.find(cat => cat.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-') === slug);
+  const category = categories.find(cat => cat.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-') === decodedSlug);
 
   useEffect(() => {
     if (!auth) return;
@@ -39,7 +40,13 @@ export default function CategoryPage() {
   }, [auth]);
 
   useEffect(() => {
-    if (!firestore || !category) return;
+    if (!firestore) return;
+    
+    if (!category) {
+      setLoading(false);
+      setPosts([]);
+      return;
+    }
 
     setLoading(true);
     const postsCollection = collection(firestore, postsCollectionPath);
@@ -55,7 +62,6 @@ export default function CategoryPage() {
         ...doc.data(),
       } as BlogPost));
       
-      // Sort posts by date on the client side
       const sortedPosts = postsData.sort((a, b) => {
         const dateA = a.createdAt?.toDate()?.getTime() || 0;
         const dateB = b.createdAt?.toDate()?.getTime() || 0;
@@ -93,7 +99,7 @@ export default function CategoryPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-center text-3xl font-bold text-muted-foreground">Coming Soon!</p>
-              <p className="text-center text-muted-foreground mt-2">There are no posts in the "{category}" category yet. Check back later!</p>
+              <p className="text-center text-muted-foreground mt-2">There are no posts in the "{category || decodedSlug}" category yet. Check back later!</p>
             </CardContent>
           </Card>
         )}
