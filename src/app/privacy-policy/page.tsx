@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
     return (
         <div className="flex min-h-screen flex-col bg-background text-foreground">
             <Header user={user} onLogout={handleLogout} />
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="flex-grow container max-w-7xl mx-auto px-4 py-8">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-3xl font-bold">Privacy Policy</CardTitle>

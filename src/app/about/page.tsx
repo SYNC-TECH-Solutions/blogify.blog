@@ -37,7 +37,7 @@ export default function AboutPage() {
     return (
         <div className="flex min-h-screen flex-col bg-background text-foreground">
             <Header user={user} onLogout={handleLogout} />
-            <main className="flex-grow container mx-auto px-4 py-8">
+            <main className="flex-grow container max-w-7xl mx-auto px-4 py-8">
                 <div className="space-y-12">
                     <Card className="overflow-hidden shadow-lg">
                         <div className="relative w-full h-48 md:h-64">

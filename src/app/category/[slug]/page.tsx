@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -80,7 +81,7 @@ export default function CategoryPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header user={user} onLogout={handleLogout} />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container max-w-7xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <Loader className="h-12 w-12" />
