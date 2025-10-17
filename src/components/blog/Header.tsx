@@ -68,9 +68,10 @@ export default function Header({ user, onLogout }: HeaderProps) {
         </div>
 
         <div className="flex items-center justify-end gap-4">
-          <div className="hidden items-center gap-2 sm:flex">
-            <p className="text-sm text-muted-foreground">Powered by</p>
-            <p className="text-sm font-semibold">SYNC TECH Solutions</p>
+          <div className="hidden sm:flex flex-col items-end -space-y-1">
+            <p className="text-xs text-muted-foreground">Powered by</p>
+            <p className="text-lg font-bold">SYNC TECH</p>
+            <p className="text-xs font-bold">Solutions</p>
           </div>
           {user ? (
              <DropdownMenu>
