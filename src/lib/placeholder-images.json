@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "blog-header",
+      "description": "Abstract background for blog header",
+      "imageUrl": "https://picsum.photos/seed/blog-header/1200/300",
+      "imageHint": "abstract texture"
+    }
+  ]
 }
