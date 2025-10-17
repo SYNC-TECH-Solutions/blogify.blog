@@ -22,6 +22,7 @@ export default function BlogView({ posts }: BlogViewProps) {
   const { toast } = useToast();
 
   const handleShare = async (post: BlogPost) => {
+    if (typeof window === 'undefined') return;
     const postUrl = `${window.location.origin}/#${post.id}`;
     if (navigator.share) {
       try {
@@ -48,6 +49,20 @@ export default function BlogView({ posts }: BlogViewProps) {
           variant: "destructive",
         });
       }
+    }
+  };
+
+  const formatDate = (date: any) => {
+    if (!date) return '...';
+    // Check if it's a Firestore Timestamp
+    if (date.toDate) {
+      return format(date.toDate(), 'MMMM d, yyyy');
+    }
+    // Check if it's a regular Date object or a string
+    try {
+      return format(new Date(date), 'MMMM d, yyyy');
+    } catch (e) {
+      return 'Invalid date';
     }
   };
 
@@ -89,7 +104,7 @@ export default function BlogView({ posts }: BlogViewProps) {
                 <CardHeader>
                   <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-                      <span>Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}</span>
+                      <span>Posted on {formatDate(post.createdAt)}</span>
                       {post.category && <Badge variant="secondary">{post.category}</Badge>}
                   </div>
                 </CardHeader>

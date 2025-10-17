@@ -2,26 +2,42 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { onSnapshot, query, orderBy, collection, where } from 'firebase/firestore';
-import { useAuth, useFirestore } from '@/firebase';
+import { User, onAuthStateChanged, signOut } from 'firebase/auth';
+import { useAuth } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import BlogView from '@/components/blog/BlogView';
-import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
-import { Card, CardContent } from '@/components/ui/card';
 
-const postsCollectionPath = 'blog_posts';
+const staticPosts: BlogPost[] = [
+  {
+    id: "1",
+    title: "Welcome to Blogify.blog!",
+    content: "This is a placeholder post. Your dynamic content from Firestore will appear here once the security rule deployment issues are resolved. We are working on a fix!",
+    authorId: "system",
+    authorName: "Blogify Team",
+    category: "Announcements",
+    isPublished: true,
+    createdAt: new Date() as any, 
+    updatedAt: new Date() as any,
+  },
+    {
+    id: "2",
+    title: "The Power of Static Content",
+    content: "By switching to static content temporarily, we can ensure the site remains online and accessible while backend issues are addressed. This demonstrates a robust fallback strategy.",
+    authorId: "system",
+    authorName: "Dev Team",
+    category: "Tech",
+    isPublished: true,
+    createdAt: new Date() as any,
+    updatedAt: new Date() as any,
+  }
+];
+
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const { toast } = useToast();
   const auth = useAuth();
-  const firestore = useFirestore();
   const router = useRouter();
 
   useEffect(() => {
@@ -31,41 +47,12 @@ export default function Home() {
     });
     return () => unsubscribeAuth();
   }, [auth]);
-  
-  useEffect(() => {
-    // Only fetch posts if a user is logged in and firestore is available.
-    if (!firestore || !user) {
-      setPosts([]); // Clear posts if user logs out
-      return;
-    }
-    
-    const postsCollection = collection(firestore, postsCollectionPath);
-    const q = query(
-      postsCollection, 
-      where('isPublished', '==', true),
-      orderBy('createdAt', 'desc')
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const postsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      } as BlogPost));
-      setPosts(postsData);
-    }, async (serverError) => {
-        const permissionError = new FirestorePermissionError({
-            path: postsCollection.path,
-            operation: 'list',
-        });
-        errorEmitter.emit('permission-error', permissionError);
-    });
-
-    return () => unsubscribe();
-  }, [firestore, user, toast]); // Re-run effect when user or firestore instance changes
 
   const handleLogout = () => {
     if (auth) {
-      auth.signOut();
-      router.push('/');
+      signOut(auth).then(() => {
+        router.push('/');
+      });
     }
   };
 
@@ -89,17 +76,7 @@ export default function Home() {
       </aside>
 
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        {user ? (
-          <BlogView posts={posts} />
-        ) : (
-           <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">
-                There are currently issues with displaying public posts. Please sign in to view content.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        <BlogView posts={staticPosts} />
       </main>
     </div>
   );
