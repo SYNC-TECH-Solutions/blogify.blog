@@ -46,7 +46,20 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <ScrollArea className="flex-grow">
-                <nav className="mt-4 pr-4">
+                <div className="px-3 py-2 text-base font-semibold text-foreground">Categories</div>
+                <nav className="pr-4">
+                  <ul className="space-y-2">
+                    {categories.map(category => (
+                      <li key={category}>
+                        <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                          {category}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+                <Separator className="my-4" />
+                <nav className="pr-4">
                   <ul className="space-y-2">
                     <li>
                       <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
@@ -58,19 +71,6 @@ export default function Header({ user, onLogout }: HeaderProps) {
                         Contact Us
                       </Link>
                     </li>
-                  </ul>
-                </nav>
-                <Separator className="my-4" />
-                <div className="px-3 py-2 text-base font-semibold text-foreground">Categories</div>
-                <nav className="pr-4">
-                  <ul className="space-y-2">
-                    {categories.map(category => (
-                      <li key={category}>
-                        <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
-                          {category}
-                        </Link>
-                      </li>
-                    ))}
                   </ul>
                 </nav>
               </ScrollArea>
