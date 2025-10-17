@@ -14,7 +14,7 @@ export default function Footer() {
                     <div className="col-span-1 md:col-span-1 flex flex-col items-start">
                          <Link href="/" className="flex items-center gap-3 mb-4">
                             <BookOpen className="h-7 w-7 text-primary" />
-                            <h1 className="text-2xl font-bold text-foreground">Blogify</h1>
+                            <h1 className="text-2xl font-bold text-foreground">Blogify.blog</h1>
                         </Link>
                         <p className="text-sm text-muted-foreground">Your global stage for ideas, insights, and innovation.</p>
                     </div>
@@ -35,7 +35,7 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Quick Links</h3>
                         <ul className="space-y-2">
-                            <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary">About Blogify</Link></li>
+                            <li><Link href="/about" className="text-sm text-muted-foreground hover:text-primary">About Blogify.blog</Link></li>
                             <li><Link href="/contact" className="text-sm text-muted-foreground hover:text-primary">Contact Us</Link></li>
                             <li><Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
                             <li><Link href="/terms-conditions" className="text-sm text-muted-foreground hover:text-primary">Terms & Conditions</Link></li>
@@ -54,7 +54,7 @@ export default function Footer() {
                 </div>
                 <Separator className="my-8" />
                 <div className="text-center text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} Blogify. All Rights Reserved. Powered by <Link href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-primary underline underline-offset-4">SYNC TECH Solutions</Link>.
+                    &copy; {new Date().getFullYear()} Blogify.blog. All Rights Reserved. Powered by <Link href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-primary underline underline-offset-4">SYNC TECH Solutions</Link>.
                 </div>
             </div>
         </footer>

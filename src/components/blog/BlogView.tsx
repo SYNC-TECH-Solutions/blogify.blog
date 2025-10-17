@@ -65,7 +65,7 @@ export default function BlogView({ posts }: BlogViewProps) {
         )}
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
-            The Blogify Post
+            The Blogify.blog Post
           </h1>
         </div>
       </div>

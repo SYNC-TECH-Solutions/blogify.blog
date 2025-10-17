@@ -5,8 +5,8 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import Footer from '@/components/blog/Footer';
 
 export const metadata: Metadata = {
-  title: 'Blogify - Your Global Content & Startup Platform',
-  description: 'Blogify is a global platform for discovering content across all categories and a launchpad for startups to gain visibility on search engines. Founded by SS Brothers.',
+  title: 'Blogify.blog - Your Global Content & Startup Platform',
+  description: 'Blogify.blog is a global platform for discovering content across all categories and a launchpad for startups to gain visibility on search engines. Founded by SS Brothers.',
 };
 
 export default function RootLayout({

@@ -52,7 +52,7 @@ export default function AboutPage() {
                             )}
                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                                 <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight text-center px-4">
-                                    Welcome to Blogify
+                                    Welcome to Blogify.blog
                                 </h1>
                             </div>
                         </div>
@@ -71,7 +71,7 @@ export default function AboutPage() {
                                 </CardHeader>
                                 <CardContent className="space-y-4 text-base text-muted-foreground">
                                     <p>
-                                        At Blogify, our mission is simple: to create a single, dynamic space where anyone can discover a world of content across every imaginable category. From the intricacies of the financial market to the latest trends in technology and materials, we provide a platform for voices from both the business and public sectors.
+                                        At Blogify.blog, our mission is simple: to create a single, dynamic space where anyone can discover a world of content across every imaginable category. From the intricacies of the financial market to the latest trends in technology and materials, we provide a platform for voices from both the business and public sectors.
                                     </p>
                                     <p>
                                         We believe in the power of blogs to inform, inspire, and connect. For our readers, we are a trusted source of knowledge. For creators and businesses, we are a powerful megaphone to reach a global audience.
@@ -101,7 +101,7 @@ export default function AboutPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-base text-center max-w-3xl mx-auto">
                             <p>
-                                What makes Blogify special is our dedication to being a "startup's paradise." In the crowded digital landscape, we provide a clear path for new ventures to get discovered. By allowing us to write a blog about you, we leverage our platform's growing authority to put your brand in front of the eyes that matter, boosting your visibility on Google and other search engines.
+                                What makes Blogify.blog special is our dedication to being a "startup's paradise." In the crowded digital landscape, we provide a clear path for new ventures to get discovered. By allowing us to write a blog about you, we leverage our platform's growing authority to put your brand in front of the eyes that matter, boosting your visibility on Google and other search engines.
                             </p>
                             <p>
                                 Your story deserves to be heard. Let us be the ones to tell it.
@@ -115,7 +115,7 @@ export default function AboutPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-base text-muted-foreground">
                            <p>
-                                Blogify was founded by the <strong>SS Brothers</strong>, a team of forward-thinkers passionate about leveraging new technologies to empower people around the world. With roots in the vibrant city of lights, Karachi, Pakistan, Blogify is a fully remote company with a global mindset.
+                                Blogify.blog was founded by the <strong>SS Brothers</strong>, a team of forward-thinkers passionate about leveraging new technologies to empower people around the world. With roots in the vibrant city of lights, Karachi, Pakistan, Blogify.blog is a fully remote company with a global mindset.
                            </p>
                            <p>
                                 Our team is driven by a shared commitment to staying at the forefront of the new era, constantly exploring innovative ways to help individuals and businesses thrive. We believe that a great idea can come from anywhere, and our mission is to ensure it can be heard everywhere.
