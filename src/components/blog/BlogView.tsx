@@ -81,7 +81,7 @@ export default function BlogView({ posts }: BlogViewProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 grid-cols-1">
           {posts.map(post => (
             <Card key={post.id} id={post.id} className="flex flex-col scroll-mt-20 bg-accent/20">
               <CardHeader>
@@ -110,5 +110,6 @@ export default function BlogView({ posts }: BlogViewProps) {
     </div>
   );
 }
+
 
 
