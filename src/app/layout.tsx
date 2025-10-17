@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import Footer from '@/components/blog/Footer';
 
 export const metadata: Metadata = {
   title: 'Blogify - Your Global Content & Startup Platform',
@@ -25,6 +26,7 @@ export default function RootLayout({
           <div className="flex-grow">
             {children}
           </div>
+          <Footer />
         </FirebaseClientProvider>
         <Toaster />
       </body>
