@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { onSnapshot, query, where, collection, orderBy } from 'firebase/firestore';
+import { onSnapshot, query, where, collection } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import BlogView from '@/components/blog/BlogView';
@@ -52,8 +52,7 @@ export default function CategoryPage() {
     const postsCollection = collection(firestore, postsCollectionPath);
     const q = query(
       postsCollection, 
-      where('category', '==', category),
-      orderBy('createdAt', 'desc')
+      where('category', '==', category)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -62,7 +61,8 @@ export default function CategoryPage() {
           id: doc.id,
           ...doc.data(),
         } as BlogPost))
-        .filter(post => post.isPublished); // Filter for published posts on the client
+        .filter(post => post.isPublished) // Filter for published posts on the client
+        .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()); // Sort by date on the client
       
       setPosts(postsData);
       setLoading(false);
