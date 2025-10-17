@@ -92,10 +92,10 @@ export default function ContactPage() {
                  <div className="mx-auto bg-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center">
                    <Rocket className="h-8 w-8" />
                 </div>
-                <CardTitle className="pt-4">A Paradise for Startups</CardTitle>
+                <CardTitle className="pt-4">Launchpad for Startups & Businesses</CardTitle>
               </CardHeader>
               <CardContent className="text-muted-foreground">
-                <p>Getting noticed is your biggest challenge. We make it our mission. Email us to see how we can feature your startup, boost your SEO, and connect you with a global audience eager for innovation.</p>
+                <p>Whether you're a new startup or an established business, getting your message in front of the right audience is key. We specialize in crafting compelling stories that boost your brand's SEO and connect you with a global audience eager for innovation. Email us to get started.</p>
               </CardContent>
             </Card>
 
