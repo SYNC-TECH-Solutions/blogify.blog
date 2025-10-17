@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { categories } from "@/lib/categories";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface HeaderProps {
   user: User | null;
@@ -38,21 +39,23 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 <span className="sr-only">Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="flex flex-col">
               <SheetHeader>
                 <SheetTitle>Categories</SheetTitle>
               </SheetHeader>
-              <nav className="mt-4">
-                <ul className="space-y-2">
-                  {categories.map(category => (
-                    <li key={category}>
-                      <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
-                        {category}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+              <ScrollArea className="flex-grow">
+                <nav className="mt-4 pr-4">
+                  <ul className="space-y-2">
+                    {categories.map(category => (
+                      <li key={category}>
+                        <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                          {category}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </ScrollArea>
             </SheetContent>
           </Sheet>
         </div>
