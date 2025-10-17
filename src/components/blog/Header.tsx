@@ -65,7 +65,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   <ul className="space-y-2">
                     <li>
                       <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
-                        About Blogify.blog
+                        About blogify.blog
                       </Link>
                     </li>
                     <li>
@@ -98,9 +98,9 @@ export default function Header({ user, onLogout }: HeaderProps) {
 
         <div className="flex justify-center">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/bbrb.png" alt="Blogify.blog Logo" width={28} height={28} />
+            <Image src="/bbrb.png" alt="blogify.blog Logo" width={28} height={28} />
             <h1 className="text-2xl font-bold text-foreground">
-              Blogify<span className="text-primary text-lg">.blog</span>
+              blogify<span className="text-primary text-lg">.blog</span>
             </h1>
           </Link>
         </div>

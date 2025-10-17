@@ -60,7 +60,7 @@ export default function ContactPage() {
             </div>
             <CardContent className="p-6 md:p-8 text-center">
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Your story deserves a global audience. Your brand needs a launchpad. At Blogify.blog, we build the stage and shine the spotlight. Let's create something powerful together.
+                Your story deserves a global audience. Your brand needs a launchpad. At blogify.blog, we build the stage and shine the spotlight. Let's create something powerful together.
               </p>
             </CardContent>
           </Card>
