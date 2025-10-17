@@ -8,16 +8,6 @@ import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-    title: 'About Blogify | Your Global Voice & Startup Paradise',
-    description: 'Learn about Blogify, the platform founded by SS Brothers in Karachi, Pakistan, dedicated to bringing diverse content to a global audience and helping startups get discovered on search engines.',
-    keywords: ['Blogify', 'About Us', 'SS Brothers', 'startups', 'business blogs', 'global content platform', 'Karachi startups', 'digital marketing', 'SEO content'],
-    alternates: {
-        canonical: '/about',
-    },
-};
 
 export default function AboutPage() {
     const [user, setUser] = React.useState<User | null>(null);
