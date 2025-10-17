@@ -9,6 +9,8 @@ import Header from '@/components/blog/Header';
 import BlogView from '@/components/blog/BlogView';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const postsCollectionPath = 'blog_posts';
 
@@ -39,13 +41,12 @@ export default function Home() {
         ...doc.data(),
       } as BlogPost));
       setPosts(postsData);
-    }, (error) => {
-      console.error("Firestore Error:", error);
-      toast({
-        title: "Error Fetching Posts",
-        description: "Could not retrieve blog posts from the database.",
-        variant: "destructive",
-      });
+    }, async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+            path: postsCollection.path,
+            operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
     });
 
     return () => unsubscribe();
