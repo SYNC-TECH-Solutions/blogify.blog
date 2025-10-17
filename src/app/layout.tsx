@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
@@ -7,6 +8,9 @@ import Footer from '@/components/blog/Footer';
 export const metadata: Metadata = {
   title: 'Blogify.blog - Your Global Content & Startup Platform',
   description: 'Blogify.blog is a global platform for discovering content across all categories and a launchpad for startups to gain visibility on search engines. Founded by SS Brothers.',
+  other: {
+    "google-adsense-account": "ca-pub-7334468000130380",
+  },
 };
 
 export default function RootLayout({

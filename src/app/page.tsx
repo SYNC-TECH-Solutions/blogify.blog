@@ -66,6 +66,19 @@ export default function Home() {
         user={user}
         onLogout={handleLogout}
       />
+      
+      {/* Desktop Ad Placeholders */}
+      <aside className="hidden lg:block fixed left-4 top-20 w-40 h-[600px] bg-muted/40 rounded-lg shadow">
+          <div className="flex items-center justify-center h-full">
+              <p className="text-muted-foreground text-sm">Vertical Ad</p>
+          </div>
+      </aside>
+      <aside className="hidden lg:block fixed right-4 top-20 w-40 h-[600px] bg-muted/40 rounded-lg shadow">
+          <div className="flex items-center justify-center h-full">
+              <p className="text-muted-foreground text-sm">Vertical Ad</p>
+          </div>
+      </aside>
+
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
         <BlogView posts={posts} />
       </main>

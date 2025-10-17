@@ -106,7 +106,8 @@ export default function BlogView({ posts }: BlogViewProps) {
                   </Button>
                 </CardFooter>
               </Card>
-              <div className="md:hidden w-full h-64 bg-muted/40 flex items-center justify-center rounded-lg">
+              {/* Mobile Ad Placeholder */}
+              <div className="md:hidden w-full h-64 bg-muted/40 flex items-center justify-center rounded-lg shadow">
                 <p className="text-muted-foreground">Ad Placeholder</p>
               </div>
             </React.Fragment>
