@@ -17,6 +17,12 @@
       "description": "A lightbulb or a growing plant, symbolizing new ideas and innovation.",
       "imageUrl": "https://picsum.photos/seed/mission-vision/600/400",
       "imageHint": "innovation growth"
+    },
+    {
+      "id": "contact-us-hero",
+      "description": "An artistic and modern image of communication tools like a vintage phone or letters.",
+      "imageUrl": "https://picsum.photos/seed/contact-hero/1200/400",
+      "imageHint": "communication tools"
     }
   ]
 }
