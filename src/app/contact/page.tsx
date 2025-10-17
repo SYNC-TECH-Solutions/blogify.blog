@@ -64,12 +64,12 @@ export default function ContactPage() {
             </CardContent>
           </Card>
 
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <Card className="bg-secondary border-none">
+          <div className="flex justify-center">
+            <Card className="bg-secondary border-none max-w-2xl w-full">
               <CardHeader>
-                <CardTitle className="text-3xl font-bold">Email Us Directly</CardTitle>
+                <CardTitle className="text-3xl font-bold text-center">Email Us Directly</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-muted-foreground">
+              <CardContent className="space-y-4 text-muted-foreground text-center">
                 <p>
                   For the fastest response, please send us an email. Click the button below to open your default email client and start a conversation.
                 </p>
@@ -77,22 +77,11 @@ export default function ContactPage() {
                   We welcome feedback, collaboration proposals, and submissions from new and established writers. Let's connect and create something amazing together.
                 </p>
                 <a href="mailto:sherazhussainofficial1@gmail.com">
-                  <Button size="lg" className="w-full md:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto">
                     <Mail className="mr-2 h-5 w-5" />
                     Send an Email
                   </Button>
                 </a>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold">Contact Form</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Our integrated contact form is currently under construction. Please check back soon for another convenient way to get in touch with the Blogify team!
-                </p>
               </CardContent>
             </Card>
           </div>
