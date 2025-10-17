@@ -1,5 +1,3 @@
-# Firebase Studio
+# Blogify.blog
 
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+A site which is based on truth and we will try to bring out the best
