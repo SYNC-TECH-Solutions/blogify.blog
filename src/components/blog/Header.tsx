@@ -2,7 +2,7 @@
 
 import { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { BookOpen, LogOut, UserCircle, LayoutDashboard, Menu } from "lucide-react";
+import { BookOpen, LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,10 +17,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetFooter,
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface HeaderProps {
   user: User | null;
@@ -41,10 +43,26 @@ export default function Header({ user, onLogout }: HeaderProps) {
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
               <SheetHeader>
-                <SheetTitle>Categories</SheetTitle>
+                <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <ScrollArea className="flex-grow">
                 <nav className="mt-4 pr-4">
+                  <ul className="space-y-2">
+                    <li>
+                      <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                        About Blogify
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/contact" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                        Contact Us
+                      </Link>
+                    </li>
+                  </ul>
+                </nav>
+                <Separator className="my-4" />
+                <div className="px-3 py-2 text-base font-semibold text-foreground">Categories</div>
+                <nav className="pr-4">
                   <ul className="space-y-2">
                     {categories.map(category => (
                       <li key={category}>
@@ -56,6 +74,22 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   </ul>
                 </nav>
               </ScrollArea>
+              <SheetFooter className="mt-auto border-t pt-4">
+                <div className="flex w-full justify-center gap-4">
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                    <Facebook className="h-6 w-6" />
+                  </Link>
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                    <Instagram className="h-6 w-6" />
+                  </Link>
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                    <Twitter className="h-6 w-6" />
+                  </Link>
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
+                    <Rss className="h-6 w-6" />
+                  </Link>
+                </div>
+              </SheetFooter>
             </SheetContent>
           </Sheet>
         </div>
