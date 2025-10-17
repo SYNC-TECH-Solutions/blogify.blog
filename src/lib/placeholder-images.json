@@ -5,6 +5,18 @@
       "description": "Abstract background for blog header",
       "imageUrl": "https://picsum.photos/seed/blog-header/1200/300",
       "imageHint": "abstract texture"
+    },
+    {
+      "id": "about-us-hero",
+      "description": "A diverse group of people collaborating on a project, representing global connection.",
+      "imageUrl": "https://picsum.photos/seed/about-hero/1200/400",
+      "imageHint": "global team"
+    },
+    {
+      "id": "mission-vision",
+      "description": "A lightbulb or a growing plant, symbolizing new ideas and innovation.",
+      "imageUrl": "https://picsum.photos/seed/mission-vision/600/400",
+      "imageHint": "innovation growth"
     }
   ]
 }
