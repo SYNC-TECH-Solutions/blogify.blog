@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -21,7 +22,7 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Categories</h3>
                         <ul className="space-y-2">
-                            {categories.slice(0, 5).map(category => (
+                            {categories.map(category => (
                                 <li key={category}>
                                     <Link href={`/category/${category.toLowerCase().replace(/ /g, '-')}`} className="text-sm text-muted-foreground hover:text-primary">
                                         {category}
