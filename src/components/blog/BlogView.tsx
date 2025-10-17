@@ -1,3 +1,4 @@
+
 "use client";
 
 import { BlogPost } from '@/lib/types';
@@ -64,7 +65,7 @@ export default function BlogView({ posts }: BlogViewProps) {
           />
         )}
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight text-center px-4">
             The Blogify.blog Post
           </h1>
         </div>
@@ -77,12 +78,12 @@ export default function BlogView({ posts }: BlogViewProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1">
+        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {posts.map(post => (
             <Card key={post.id} id={post.id} className="flex flex-col scroll-mt-20">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
                     <span>Posted on {post.createdAt ? format(post.createdAt.toDate(), 'MMMM d, yyyy') : '...'}</span>
                     {post.category && <Badge variant="secondary">{post.category}</Badge>}
                 </div>
@@ -92,7 +93,7 @@ export default function BlogView({ posts }: BlogViewProps) {
                   <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-between items-center">
+              <CardFooter className="flex justify-between items-center mt-auto">
                 <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
                 <Button variant="ghost" size="icon" onClick={() => handleShare(post)}>
                   <Share2 className="h-5 w-5" />
