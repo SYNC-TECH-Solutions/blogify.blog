@@ -64,10 +64,13 @@ export default function BlogView({ posts }: BlogViewProps) {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight text-center px-4">
-            The Blogify.blog Post
-          </h1>
+        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center p-4">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
+                The Blogify.blog Post
+            </h1>
+            <p className="mt-2 md:mt-4 text-lg md:text-xl text-neutral-200 max-w-2xl">
+                Insights, stories, and ideas from the forefront of innovation.
+            </p>
         </div>
       </div>
       
@@ -107,3 +110,4 @@ export default function BlogView({ posts }: BlogViewProps) {
     </div>
   );
 }
+
