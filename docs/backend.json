@@ -1,15 +1,15 @@
-
 {
   "entities": {
     "BlogPost": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "BlogPost",
       "type": "object",
-      "description": "Represents a blog post in the CMS.",
+      "description": "Represents a blog post in the Blogify CMS.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the blog post."
+          "description": "Unique identifier for the blog post entity. This is the primary key.",
+          "format": "uuid"
         },
         "title": {
           "type": "string",
@@ -17,7 +17,7 @@
         },
         "content": {
           "type": "string",
-          "description": "The content of the blog post."
+          "description": "The main content of the blog post."
         },
         "authorId": {
           "type": "string",
@@ -25,7 +25,7 @@
         },
         "isPublished": {
           "type": "boolean",
-          "description": "Indicates whether the blog post is published."
+          "description": "Indicates whether the blog post is published or not."
         },
         "createdAt": {
           "type": "string",
@@ -56,7 +56,8 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the author."
+          "description": "Unique identifier for the author entity. This is the primary key.",
+          "format": "uuid"
         },
         "name": {
           "type": "string",
@@ -82,11 +83,44 @@
     ]
   },
   "firestore": {
-    "/blog_posts/{blogPostId}": {
-      "schema": {
-        "$ref": "#/entities/BlogPost"
+    "structure": [
+      {
+        "path": "/artifacts/{__app_id}/public/data/blog_posts/{blogPostId}",
+        "definition": {
+          "entityName": "BlogPost",
+          "schema": {
+            "$ref": "#/backend/entities/BlogPost"
+          },
+          "description": "Stores blog posts. Includes denormalized 'authorId' for authorization independence.",
+          "params": [
+            {
+              "name": "__app_id",
+              "description": "The unique identifier for the Blogify CMS application."
+            },
+            {
+              "name": "blogPostId",
+              "description": "The unique identifier for the blog post."
+            }
+          ]
+        }
       },
-      "description": "Collection of blog posts. The 'authorId' field must match the authenticated user's UID for write access. Read access is public."
-    }
+      {
+        "path": "/authors/{authorId}",
+        "definition": {
+          "entityName": "Author",
+          "schema": {
+            "$ref": "#/backend/entities/Author"
+          },
+          "description": "Stores author profiles.",
+          "params": [
+            {
+              "name": "authorId",
+              "description": "The unique identifier for the author."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to provide a secure and scalable CMS for blog posts, adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling. It leverages path-based ownership to ensure that each author's blog posts are securely managed, simplifying the security rules and enhancing debuggability.\n\nAuthorization Independence: The `authorId` field within the `/artifacts/{__app_id}/public/data/blog_posts/{blogPostId}` collection is denormalized. This denormalization is important to avoid `get()` calls in the security rules when checking if the current user is the author of the blog post. This enables atomic operations and simplifies security rule logic. In this specific scenario, Authorization Independence could also be achieved using custom claims. But we are adhering to the design principle of DBAC (No Custom Claims).\n\nQAPs (Rules are not Filters): The segregation of blog posts into a single collection `/artifacts/{__app_id}/public/data/blog_posts` where all documents share the same security posture supports secure list operations. The security rules can efficiently filter based on the `authorId` without requiring complex filtering logic within the rules themselves, ensuring that users can only access blog posts they are authorized to view."
   }
 }
