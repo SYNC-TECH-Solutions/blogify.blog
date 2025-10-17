@@ -10,6 +10,8 @@ import { addDoc, setDoc, deleteDoc, serverTimestamp, collection, doc } from 'fir
 import { useFirestore } from '@/firebase';
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -64,56 +66,74 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     }
     const postsCollection = collection(firestore, postsCollectionPath);
 
-    try {
-      if (selectedPost) {
-        // Update existing post
-        const postRef = doc(postsCollection, selectedPost.id);
-        await setDoc(postRef, {
-          ...data,
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
-        toast({ title: "Post Updated!", description: "Your changes have been saved." });
-      } else {
-        // Create new post
-        await addDoc(postsCollection, {
-          ...data,
-          authorId: user.uid,
-          authorName: user.displayName || 'Admin',
-          isPublished: true,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+    if (selectedPost) {
+      // Update existing post
+      const postRef = doc(postsCollection, selectedPost.id);
+      const postData = {
+        ...data,
+        updatedAt: serverTimestamp(),
+      };
+      setDoc(postRef, postData, { merge: true })
+        .then(() => {
+          toast({ title: "Post Updated!", description: "Your changes have been saved." });
+          setSelectedPost(null);
+        })
+        .catch(async (serverError) => {
+          const permissionError = new FirestorePermissionError({
+            path: postRef.path,
+            operation: 'update',
+            requestResourceData: postData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
         });
-        toast({ title: "Post Created!", description: "Your new post is live." });
-      }
-      setSelectedPost(null);
-    } catch (error) {
-      console.error("Error saving post:", error);
-      toast({
-        title: "Error",
-        description: "There was a problem saving your post.",
-        variant: "destructive",
-      });
+
+    } else {
+      // Create new post
+      const postData = {
+        ...data,
+        authorId: user.uid,
+        authorName: user.displayName || 'Admin',
+        isPublished: true,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      };
+      addDoc(postsCollection, postData)
+        .then(() => {
+          toast({ title: "Post Created!", description: "Your new post is live." });
+          setSelectedPost(null);
+        })
+        .catch(async (serverError) => {
+          const permissionError = new FirestorePermissionError({
+            path: postsCollection.path,
+            operation: 'create',
+            requestResourceData: postData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        });
     }
   };
 
   const handleDelete = async () => {
     if (!postToDelete || !firestore) return;
-    const postsCollection = collection(firestore, postsCollectionPath);
-    try {
-      await deleteDoc(doc(postsCollection, postToDelete.id));
-      toast({ title: "Post Deleted", description: "The post has been removed." });
-      if (selectedPost?.id === postToDelete.id) {
-        setSelectedPost(null);
-      }
-      setPostToDelete(null);
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast({
-        title: "Error",
-        description: "There was a problem deleting the post.",
-        variant: "destructive",
+    
+    const postRef = doc(firestore, postsCollectionPath, postToDelete.id);
+    
+    deleteDoc(postRef)
+      .then(() => {
+        toast({ title: "Post Deleted", description: "The post has been removed." });
+        if (selectedPost?.id === postToDelete.id) {
+          setSelectedPost(null);
+        }
+        setPostToDelete(null);
+      })
+      .catch(async (serverError) => {
+        const permissionError = new FirestorePermissionError({
+          path: postRef.path,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
       });
-    }
+
     setIsDeleteDialogOpen(false);
   };
   
