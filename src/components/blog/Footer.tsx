@@ -14,7 +14,7 @@ export default function Footer() {
                     <div className="col-span-1 md:col-span-1 flex flex-col items-start">
                          <Link href="/" className="flex items-center gap-3 mb-4">
                             <BookOpen className="h-7 w-7 text-primary" />
-                            <h1 className="text-2xl font-bold text-foreground">Blogify.blog</h1>
+                            <h1 className="text-2xl font-bold text-foreground">Blogify<span className="text-primary text-xl">.blog</span></h1>
                         </Link>
                         <p className="text-sm text-muted-foreground">Your global stage for ideas, insights, and innovation.</p>
                     </div>

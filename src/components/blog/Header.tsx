@@ -98,7 +98,9 @@ export default function Header({ user, onLogout }: HeaderProps) {
         <div className="flex justify-center">
           <Link href="/" className="flex items-center gap-3">
             <BookOpen className="h-7 w-7 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground">Blogify.blog</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              Blogify<span className="text-primary text-xl">.blog</span>
+            </h1>
           </Link>
         </div>
 
