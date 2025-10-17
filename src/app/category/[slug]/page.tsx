@@ -53,15 +53,16 @@ export default function CategoryPage() {
     const q = query(
       postsCollection, 
       where('category', '==', category),
-      where('isPublished', '==', true),
       orderBy('createdAt', 'desc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const postsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      } as BlogPost));
+      const postsData = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        } as BlogPost))
+        .filter(post => post.isPublished); // Filter for published posts on the client
       
       setPosts(postsData);
       setLoading(false);
