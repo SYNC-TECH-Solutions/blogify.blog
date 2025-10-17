@@ -112,7 +112,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 <span className="text-foreground">SYNC </span>
                 <span className="text-primary">TECH</span>
             </p>
-            <p className="text-xs font-bold text-foreground">Solutions</p>
+            <p className="text-sm font-bold text-foreground">Solutions</p>
           </Link>
           {user ? (
              <DropdownMenu>
