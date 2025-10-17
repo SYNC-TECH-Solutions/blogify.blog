@@ -4,7 +4,7 @@ import * as React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Bold, Italic, Heading, List, Link, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Table } from 'lucide-react';
+import { Bold, Italic, Heading, List, Link, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Table, Image, Video, File } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,7 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
 
     React.useImperativeHandle(ref, () => textareaRef.current as HTMLTextAreaElement);
 
-    const applyFormat = (format: 'bold' | 'italic' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'list' | 'link' | 'table') => {
+    const applyFormat = (format: 'bold' | 'italic' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'list' | 'link' | 'image' | 'video' | 'document' | 'table') => {
       const textarea = textareaRef.current;
       if (!textarea) return;
 
@@ -31,6 +31,7 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
       const end = textarea.selectionEnd;
       const selectedText = value.substring(start, end);
       let newText;
+      let selectionOffset = { start: 0, end: 0 };
 
       switch(format) {
         case 'h1':
@@ -62,6 +63,19 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
           break;
         case 'link':
           newText = `[${selectedText}](url)`;
+          selectionOffset = { start: newText.length - 4, end: newText.length - 1 };
+          break;
+        case 'image':
+          newText = `![${selectedText}](image_url)`;
+          selectionOffset = { start: newText.length - 10, end: newText.length - 1 };
+          break;
+        case 'video':
+          newText = `[${selectedText}](video_url)`;
+           selectionOffset = { start: newText.length - 10, end: newText.length - 1 };
+          break;
+        case 'document':
+          newText = `[${selectedText}](document_url)`;
+           selectionOffset = { start: newText.length - 13, end: newText.length - 1 };
           break;
         case 'table':
           newText = `| Header 1 | Header 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |\n| Cell 3   | Cell 4   |`;
@@ -75,8 +89,8 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
 
       setTimeout(() => {
         textarea.focus();
-        if(format === 'link' && selectedText.length > 0){
-          textarea.setSelectionRange(newValue.length - 4, newValue.length -1);
+        if (['link', 'image', 'video', 'document'].includes(format) && selectedText.length > 0) {
+          textarea.setSelectionRange(start + selectionOffset.start, start + selectionOffset.end);
         } else {
           textarea.setSelectionRange(start + newText.length, start + newText.length);
         }
@@ -105,7 +119,19 @@ const ContentEditor = React.forwardRef<HTMLTextAreaElement, ContentEditorProps>(
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('bold')} title="Bold"><Bold className="h-4 w-4" /></Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('italic')} title="Italic"><Italic className="h-4 w-4" /></Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('list')} title="Bullet List"><List className="h-4 w-4" /></Button>
-            <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('link')} title="Link"><Link className="h-4 w-4" /></Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="ghost" size="icon" title="Insert Media">
+                  <Link className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onSelect={() => applyFormat('link')}><Link className="h-4 w-4 mr-2" />Link</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => applyFormat('image')}><Image className="h-4 w-4 mr-2" />Image</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => applyFormat('video')}><Video className="h-4 w-4 mr-2" />Video</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => applyFormat('document')}><File className="h-4 w-4 mr-2" />Document</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button type="button" variant="ghost" size="icon" onClick={() => applyFormat('table')} title="Table"><Table className="h-4 w-4" /></Button>
         </div>
         <Textarea
