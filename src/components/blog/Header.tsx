@@ -105,8 +105,8 @@ export default function Header({ user, onLogout }: HeaderProps) {
         <div className="flex items-center justify-end gap-4">
           <Link href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="hidden sm:flex flex-col items-end -space-y-1.5">
             <p className="text-[10px] text-muted-foreground">Powered by</p>
-            <p className="text-sm font-bold">SYNC TECH</p>
-            <p className="text-[10px] font-bold">Solutions</p>
+            <p className="text-sm font-bold text-primary">SYNC TECH</p>
+            <p className="text-[10px] font-bold text-primary">Solutions</p>
           </Link>
           {user ? (
              <DropdownMenu>
