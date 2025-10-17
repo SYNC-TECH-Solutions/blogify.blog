@@ -11,7 +11,7 @@ import AdminDashboard from '@/components/blog/AdminDashboard';
 import AdminLoginModal from '@/components/blog/AdminLoginModal';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from 'next/navigation';
-import { Loader } from '../ui/loader';
+import { Loader } from '@/components/ui/loader';
 
 const postsCollectionPath = 'blog_posts';
 
