@@ -67,9 +67,9 @@ export default function AllPostsPage() {
           ...doc.data(),
         } as BlogPost))
         .sort((a, b) => {
-            if (a.createdAt && b.createdAt) {
-                const aMillis = a.createdAt.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt as any).getTime();
-                const bMillis = b.createdAt.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt as any).getTime();
+            if (a.updatedAt && b.updatedAt) {
+                const aMillis = a.updatedAt.toMillis ? a.updatedAt.toMillis() : new Date(a.updatedAt as any).getTime();
+                const bMillis = b.updatedAt.toMillis ? b.updatedAt.toMillis() : new Date(b.updatedAt as any).getTime();
                 return bMillis - aMillis;
             }
             return 0;
