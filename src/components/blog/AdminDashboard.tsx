@@ -274,14 +274,14 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                 <div key={post.id} className={`flex items-center justify-between p-3 rounded-lg ${selectedPost?.id === post.id ? 'bg-muted' : ''}`}>
                   <div>
                     <p className="font-semibold">{post.title}</p>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <div className="text-sm text-muted-foreground flex items-center gap-2">
                       <span>{post.updatedAt ? format(post.updatedAt.toDate(), 'MMM d, yyyy') : '...'}</span>
                        {post.isPublished ? (
                         <Badge variant="secondary" className="bg-green-100 text-green-800">Published</Badge>
                       ) : (
                         <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Draft</Badge>
                       )}
-                    </p>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Button variant="ghost" size="icon" onClick={() => setSelectedPost(post)}>
