@@ -3,14 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
-import { onSnapshot, query, orderBy, collection } from 'firebase/firestore';
+import { onSnapshot, query, orderBy, collection, doc, getDoc } from 'firebase/firestore';
 import { useAuth, useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import AdminDashboard from '@/components/blog/AdminDashboard';
 import AdminLoginModal from '@/components/blog/AdminLoginModal';
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -22,10 +22,12 @@ export default function AdminPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [postToEdit, setPostToEdit] = useState<BlogPost | null>(null);
   const { toast } = useToast();
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (!auth) return;
@@ -38,6 +40,20 @@ export default function AdminPage() {
     });
     return () => unsubscribeAuth();
   }, [auth]);
+
+  useEffect(() => {
+    const postId = searchParams.get('postId');
+    if (postId && firestore) {
+      const postRef = doc(firestore, postsCollectionPath, postId);
+      getDoc(postRef).then(docSnap => {
+        if (docSnap.exists()) {
+          setPostToEdit({ id: docSnap.id, ...docSnap.data() } as BlogPost);
+        } else {
+          toast({ title: "Error", description: "Post to edit not found.", variant: "destructive" });
+        }
+      });
+    }
+  }, [searchParams, firestore, toast]);
 
   useEffect(() => {
     // Return early if firestore is not initialized or if the user is not logged in.
@@ -97,6 +113,11 @@ export default function AdminPage() {
     }
   };
 
+  const handleClearEdit = () => {
+    setPostToEdit(null);
+    router.replace('/admin', { scroll: false });
+  }
+
   if (loading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
@@ -113,7 +134,12 @@ export default function AdminPage() {
       />
       <main className="flex-grow container max-w-7xl mx-auto px-4 py-8">
         {user ? (
-          <AdminDashboard posts={posts} user={user} />
+          <AdminDashboard 
+            posts={posts} 
+            user={user} 
+            initialPost={postToEdit} 
+            onClearEdit={handleClearEdit}
+          />
         ) : (
           <AdminLoginModal
             isOpen={isLoginModalOpen}

@@ -31,6 +31,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface AdminDashboardProps {
   posts: BlogPost[];
   user: User;
+  initialPost?: BlogPost | null;
+  onClearEdit: () => void;
 }
 
 const postSchema = z.object({
@@ -90,8 +92,8 @@ function PostList({
 }
 
 
-export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+export default function AdminDashboard({ posts, user, initialPost = null, onClearEdit }: AdminDashboardProps) {
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(initialPost);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
   const { toast } = useToast();
@@ -101,6 +103,10 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     resolver: zodResolver(postSchema),
     defaultValues: { title: '', content: '', authorName: '', isPublished: true },
   });
+
+  useEffect(() => {
+    setSelectedPost(initialPost);
+  }, [initialPost]);
 
   useEffect(() => {
     if (selectedPost) {
@@ -123,6 +129,13 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     };
   }, [posts]);
 
+  const handleSetSelectedPost = (post: BlogPost | null) => {
+    setSelectedPost(post);
+    if (post === null) {
+      onClearEdit();
+    }
+  }
+
   const onSubmit = async (data: PostFormData) => {
     if (!firestore) {
         toast({ title: "Error", description: "Firestore not initialized.", variant: "destructive" });
@@ -141,7 +154,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       setDoc(postRef, postData, { merge: true })
         .then(() => {
           toast({ title: "Post Updated!", description: "Your changes have been saved." });
-          setSelectedPost(null);
+          handleSetSelectedPost(null);
         })
         .catch(async (serverError) => {
           const permissionError = new FirestorePermissionError({
@@ -163,7 +176,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       addDoc(postsCollection, postData)
         .then(() => {
           toast({ title: "Post Created!", description: "Your new post is live." });
-          setSelectedPost(null);
+          handleSetSelectedPost(null);
         })
         .catch(async (serverError) => {
           const permissionError = new FirestorePermissionError({
@@ -185,7 +198,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       .then(() => {
         toast({ title: "Post Deleted", description: "The post has been removed." });
         if (selectedPost?.id === postToDelete.id) {
-          setSelectedPost(null);
+          handleSetSelectedPost(null);
         }
         setPostToDelete(null);
       })
@@ -302,7 +315,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         </CardContent>
         <CardFooter className="flex justify-end gap-2">
           {selectedPost && (
-            <Button variant="ghost" onClick={() => setSelectedPost(null)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => handleSetSelectedPost(null)}>Cancel</Button>
           )}
           <Button onClick={form.handleSubmit(onSubmit)} disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? 'Saving...' : 'Save Post'}
@@ -313,7 +326,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       <Card className="flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle>Your Posts</CardTitle>
-          <Button size="sm" onClick={() => setSelectedPost(null)} variant="outline">
+          <Button size="sm" onClick={() => handleSetSelectedPost(null)} variant="outline">
             <PlusCircle className="mr-2 h-4 w-4" />
             New
           </Button>
@@ -329,7 +342,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                 <PostList 
                   posts={posts}
                   selectedPost={selectedPost}
-                  onSelectPost={setSelectedPost}
+                  onSelectPost={handleSetSelectedPost}
                   onDeletePost={openDeleteDialog}
                 />
             </TabsContent>
@@ -337,7 +350,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                <PostList 
                   posts={publishedPosts}
                   selectedPost={selectedPost}
-                  onSelectPost={setSelectedPost}
+                  onSelectPost={handleSetSelectedPost}
                   onDeletePost={openDeleteDialog}
                 />
             </TabsContent>
@@ -345,7 +358,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                <PostList 
                   posts={draftPosts}
                   selectedPost={selectedPost}
-                  onSelectPost={setSelectedPost}
+                  onSelectPost={handleSetSelectedPost}
                   onDeletePost={openDeleteDialog}
                 />
             </TabsContent>
@@ -372,5 +385,3 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     </div>
   );
 }
-
-    
