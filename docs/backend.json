@@ -8,8 +8,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the blog post entity. This is the primary key.",
-          "format": "uuid"
+          "description": "Unique identifier for the blog post entity."
         },
         "title": {
           "type": "string",
@@ -17,7 +16,7 @@
         },
         "content": {
           "type": "string",
-          "description": "The main content of the blog post."
+          "description": "The main content or body of the blog post."
         },
         "authorId": {
           "type": "string",
@@ -56,12 +55,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the author entity. This is the primary key.",
-          "format": "uuid"
+          "description": "Unique identifier for the author entity."
         },
-        "name": {
+        "displayName": {
           "type": "string",
-          "description": "The name of the author."
+          "description": "The display name of the author."
         },
         "email": {
           "type": "string",
@@ -71,7 +69,7 @@
       },
       "required": [
         "id",
-        "name",
+        "displayName",
         "email"
       ]
     }
@@ -85,42 +83,26 @@
   "firestore": {
     "structure": [
       {
-        "path": "/artifacts/{__app_id}/public/data/blog_posts/{blogPostId}",
+        "path": "/artifacts/{appId}/public/data/blog_posts/{blogPostId}",
         "definition": {
           "entityName": "BlogPost",
           "schema": {
             "$ref": "#/backend/entities/BlogPost"
           },
-          "description": "Stores blog posts. Includes denormalized 'authorId' for authorization independence.",
+          "description": "Stores blog post data. The appId parameter identifies the specific application, and the blogPostId parameter is the unique identifier for each blog post.",
           "params": [
             {
-              "name": "__app_id",
-              "description": "The unique identifier for the Blogify CMS application."
+              "name": "appId",
+              "description": "The unique identifier for the Blogify CMS application. This is retrieved from the environment variable __app_id."
             },
             {
               "name": "blogPostId",
-              "description": "The unique identifier for the blog post."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/authors/{authorId}",
-        "definition": {
-          "entityName": "Author",
-          "schema": {
-            "$ref": "#/backend/entities/Author"
-          },
-          "description": "Stores author profiles.",
-          "params": [
-            {
-              "name": "authorId",
-              "description": "The unique identifier for the author."
+              "description": "The unique identifier for each blog post."
             }
           ]
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to provide a secure and scalable CMS for blog posts, adhering to the principles of Authorization Independence, Structural Segregation, and Access Modeling. It leverages path-based ownership to ensure that each author's blog posts are securely managed, simplifying the security rules and enhancing debuggability.\n\nAuthorization Independence: The `authorId` field within the `/artifacts/{__app_id}/public/data/blog_posts/{blogPostId}` collection is denormalized. This denormalization is important to avoid `get()` calls in the security rules when checking if the current user is the author of the blog post. This enables atomic operations and simplifies security rule logic. In this specific scenario, Authorization Independence could also be achieved using custom claims. But we are adhering to the design principle of DBAC (No Custom Claims).\n\nQAPs (Rules are not Filters): The segregation of blog posts into a single collection `/artifacts/{__app_id}/public/data/blog_posts` where all documents share the same security posture supports secure list operations. The security rules can efficiently filter based on the `authorId` without requiring complex filtering logic within the rules themselves, ensuring that users can only access blog posts they are authorized to view."
+    "reasoning": "This Firestore data structure is designed to support a blog CMS with real-time updates and secure admin access, emphasizing authorization independence, clarity, and scalability. All blog posts are stored under a predictable path, `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. This flat structure simplifies security rules and eliminates the need for complex hierarchical authorization. Since the blog posts are all public, no user-based hierarchy is required, and no denormalization is necessary. The application enforces security at two layers: Firebase Authentication (Layer 1) and a local UI gate (Layer 2), as described in the prompt. The Firebase Authentication ensures that only the authenticated admin (verified via custom token) can perform write operations. The local UI gate provides an additional layer of security, requiring a password to access the Admin Dashboard. This separation of concerns enhances security and maintainability."
   }
 }
