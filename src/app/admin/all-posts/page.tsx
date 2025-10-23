@@ -207,12 +207,12 @@ export default function AllPostsPage() {
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     {post.isPublished ? (
-                      <Button variant="destructive" size="sm" onClick={() => handleTogglePublish(post)}>
+                      <Button variant="default" size="sm" onClick={() => handleTogglePublish(post)} className="bg-blue-600 hover:bg-blue-700 text-white">
                           <XCircle className="mr-2 h-4 w-4" />
                           Unpublish
                       </Button>
                     ) : (
-                      <Button variant="default" size="sm" onClick={() => handleTogglePublish(post)} className="bg-green-600 hover:bg-green-700 text-white">
+                      <Button variant="destructive" size="sm" onClick={() => handleTogglePublish(post)} className="text-white">
                           <CheckCircle className="mr-2 h-4 w-4" />
                           Publish
                       </Button>
