@@ -1,34 +1,42 @@
 /**
- * @fileoverview Firestore Security Rules for the Blogify CMS.
+ * @fileoverview Firestore Security Rules for Blogify CMS.
  *
  * Core Philosophy:
- * This ruleset allows public read access to blog posts while restricting write access to authenticated administrators only.
+ * This ruleset allows public read access to blog posts while restricting write access to authenticated administrators.
  *
  * Data Structure:
- * Blog posts are stored in the `/artifacts/{appId}/public/data/blog_posts/{blogPostId}` collection. The `appId` parameter identifies the specific application.
+ * Blog posts are stored in a flat structure under `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`.  No user-based hierarchy is used.
  *
  * Key Security Decisions:
- * - Public read access is granted to all blog posts.
- * - Write access (create, update, delete) is restricted to authenticated users. No role or ownership checks are implemented.
+ * - Public read access to all blog posts.
+ * - Write access restricted to authenticated administrators.  The ruleset currently trusts all authenticated users.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to blog posts and restricts write access to authenticated users.
+     * @description Manages read and write access to blog post documents under a specific application ID.
      * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
-     * @allow (get, list) Allows any user to read blog posts.
-     * @allow (create, update, delete) Allows authenticated users to modify blog posts.
-     * @deny (create, update, delete) Denies unauthenticated users from modifying blog posts.
-     * @principle Allows public reads, restricts writes to authenticated users.
+     * @allow (get, list): Any user can read blog posts.
+     * @allow (create, update, delete): Authenticated administrators can manage blog posts.
+     * @deny (create, update, delete): Non-authenticated users cannot create, update, or delete blog posts.
+     * @principle Allows any user to read data and authenticated users to create, update and delete it.
      */
     match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
-      allow get, list: if true;
-      allow create, update, delete: if isSignedIn();
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
 
-    // Define helper functions
+    // ================== Helper Functions ==================
+
+    /**
+     * @description Checks if the request is authenticated.
+     * @return {boolean} True if the request is authenticated; false otherwise.
+     */
     function isSignedIn() {
       return request.auth != null;
     }
