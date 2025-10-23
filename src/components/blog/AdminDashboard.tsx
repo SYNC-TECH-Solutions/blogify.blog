@@ -42,7 +42,7 @@ const postSchema = z.object({
   category: z.enum(categories as [string, ...string[]], {
     required_error: "You need to select a category.",
   }),
-  isPublished: z.boolean().default(true),
+  isPublished: z.boolean().default(false),
 });
 
 type PostFormData = z.infer<typeof postSchema>;
@@ -101,7 +101,7 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
-    defaultValues: { title: '', content: '', authorName: '', isPublished: true },
+    defaultValues: { title: '', content: '', authorName: '', isPublished: false },
   });
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
         isPublished: selectedPost.isPublished,
       });
     } else {
-      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined, isPublished: true });
+      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined, isPublished: false });
     }
   }, [selectedPost, form, user.displayName]);
 
@@ -175,7 +175,7 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
       };
       addDoc(postsCollection, postData)
         .then(() => {
-          toast({ title: "Post Created!", description: "Your new post is live." });
+          toast({ title: "Post Created!", description: "Your new post is saved as a draft." });
           handleSetSelectedPost(null);
         })
         .catch(async (serverError) => {
@@ -385,3 +385,5 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
     </div>
   );
 }
+
+    
