@@ -1,34 +1,31 @@
 /**
- * @fileoverview Firestore Security Rules for Blogify CMS.
+ * @file Overview
+ * This ruleset secures the Blogify CMS blog post data stored in Firestore.
  *
- * Core Philosophy:
- * This ruleset provides public read access to blog posts while restricting write access to authenticated administrators.
+ * @core_philosophy All blog posts are treated as publicly readable, but write access is strictly limited to authenticated administrators.
  *
- * Data Structure:
- * Blog posts are stored in a flat structure under `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`.  The `{appId}` is expected to be a fixed application ID.
+ * @data_structure Blog posts are stored in a flat structure under the path `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`.  The `appId` identifies the Blogify CMS application, and `blogPostId` is the unique ID of the blog post.
  *
- * Key Security Decisions:
- * - Public read access is granted to all blog posts, based on the application's design for public content.
- * - Write operations are restricted to authenticated users.  The original design mentions an admin role, however this has not been implemented yet.
- * - Schema validation is relaxed to allow for rapid prototyping, except for validating the authorId on create.
+ * @key_security_decisions
+ *   - Public read access for all blog posts.
+ *   - Strict restriction of write access (create, update, delete) to authenticated users only. There are no role based permissions. All authenticated users can modify the data.
+ *   - Listing of blog posts is allowed for everyone.
  *
- * Denormalization for Authorization:
- * Not applicable, as only authentication is enforced for write access.
+ * @denormalization_for_authorization Not applicable, as all data is public and write access is limited to admins.
  *
- * Structural Segregation:
- * Not applicable, as all blog posts are considered public.
+ * @structural_segregation Not applicable, as drafts are not separated into private collections.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to blog posts and restricts write access to authenticated users.
+     * @description Secures blog posts, allowing public read access and authenticated-user-only write access.
      * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
-     * @allow (get, list): Any user can read a blog post.
-     * @allow (create, update, delete): Only authenticated users can create, update, or delete a blog post.
-     * @deny (create, update, delete): Unauthenticated users cannot modify blog posts.
-     * @principle Allows public read access and restricts write access to logged in users.
+     * @allow (get, list): Any user can read blog posts.
+     * @allow (create, update, delete): Only authenticated users can write blog posts.
+     * @deny (create, update, delete): Unauthenticated users cannot write blog posts.
+     * @principle Allows public read but restricts write access to authenticated admins.
      */
     match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
       allow get: if true;
@@ -37,10 +34,10 @@ service cloud.firestore {
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
+  }
 
-    // Helper function to check if a user is signed in
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  // Helper function to determine if the user is signed in.
+  function isSignedIn() {
+    return request.auth != null;
   }
 }
