@@ -46,7 +46,7 @@ export default function EmbedTestPage() {
         </main>
       </div>
       <Script
-        src="https://embed.blogify.blog/embed.js"
+        src="https://embedblogify.netlify.app/embed.js"
         strategy="lazyOnload"
       />
     </>
