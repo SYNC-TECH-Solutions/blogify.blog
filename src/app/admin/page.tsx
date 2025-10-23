@@ -48,6 +48,7 @@ export default function AdminPage() {
     };
 
     const postsCollection = collection(firestore, postsCollectionPath);
+    // Query for all posts, ordered by creation date, to act as an approval dashboard
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
