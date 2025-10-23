@@ -40,19 +40,14 @@ export default function AdminPage() {
   }, [auth]);
 
   useEffect(() => {
-    // Exit early if firestore isn't initialized or if there's no authenticated user
     if (!firestore || !user) {
-      // If the user is explicitly logged out, clear the posts
-      if (user === null) {
+      if (user === null && !loading) {
         setPosts([]);
       }
       return;
     };
 
-    // This is the correct setup: The query logic is inside the useEffect hook that depends on `firestore` and `user`.
     const postsCollection = collection(firestore, postsCollectionPath);
-    // This query fetches all documents from the collection, ordered by creation date.
-    // It does NOT filter by `isPublished`, so it will retrieve both drafts and published posts.
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -62,7 +57,6 @@ export default function AdminPage() {
       } as BlogPost));
       setPosts(postsData);
     }, (error) => {
-      // This is the error handler for permission issues.
       const permissionError = new FirestorePermissionError({
         path: (q as any)._query.path.toString(),
         operation: 'list',
@@ -70,10 +64,8 @@ export default function AdminPage() {
       errorEmitter.emit('permission-error', permissionError);
     });
 
-    // Cleanup function to unsubscribe from the snapshot listener when the component unmounts
-    // or when the dependencies (firestore, user) change.
     return () => unsubscribe();
-  }, [firestore, user, toast]); // This effect re-runs when firestore or the user state changes.
+  }, [firestore, user, loading, toast]);
 
 
   const handleAdminLoginSuccess = () => {
