@@ -3,7 +3,7 @@
 
 import { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss } from "lucide-react";
+import { LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss, Archive } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -135,6 +135,12 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   <Link href="/admin">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span>Admin Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/all-posts">
+                    <Archive className="mr-2 h-4 w-4" />
+                    <span>All Posts</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onLogout}>
