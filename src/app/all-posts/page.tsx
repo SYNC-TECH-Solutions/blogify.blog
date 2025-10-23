@@ -11,7 +11,9 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import ReactMarkdown from 'react-markdown';
+import { format } from 'date-fns';
 
 const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
@@ -46,7 +48,13 @@ export default function AllPostsPage() {
         .map(doc => ({
           id: doc.id,
           ...doc.data(),
-        } as BlogPost));
+        } as BlogPost))
+        .sort((a, b) => {
+            if (a.createdAt && b.createdAt) {
+                return b.createdAt.toMillis() - a.createdAt.toMillis();
+            }
+            return 0;
+        });
       
       setPosts(postsData);
       setLoading(false);
@@ -70,6 +78,20 @@ export default function AllPostsPage() {
       });
     }
   };
+  
+  const formatDate = (date: any) => {
+    if (!date) return '...';
+    // Check if it's a Firestore Timestamp
+    if (date.toDate) {
+      return format(date.toDate(), 'MMMM d, yyyy');
+    }
+    // Check if it's a regular Date object or a string
+    try {
+      return format(new Date(date), 'MMMM d, yyyy');
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -79,24 +101,36 @@ export default function AllPostsPage() {
       />
       
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
+          <CardHeader className="px-0">
             <CardTitle className="text-4xl font-extrabold text-foreground tracking-tight">All Posts from Firestore Database</CardTitle>
+            <CardDescription>A complete list of every post in the database, both published and drafts.</CardDescription>
           </CardHeader>
-          <CardContent>
+          
             {loading ? (
               <div className="flex justify-center items-center h-64">
                 <Loader className="h-12 w-12" />
               </div>
             ) : (
-              <ul className="list-disc pl-5 space-y-2">
+              <div className="space-y-8">
                 {posts.map(post => (
-                  <li key={post.id} className="text-lg">{post.title}</li>
+                  <Card key={post.id}>
+                    <CardHeader>
+                      <CardTitle>{post.title}</CardTitle>
+                      <CardDescription>
+                        By {post.authorName || 'Anonymous'} on {formatDate(post.createdAt)} - {post.isPublished ? "Published" : "Draft"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                       <div className="prose prose-lg dark:prose-invert max-w-none">
+                          <ReactMarkdown skipHtml={true}>
+                              {post.content}
+                          </ReactMarkdown>
+                       </div>
+                    </CardContent>
+                  </Card>
                 ))}
-              </ul>
+              </div>
             )}
-          </CardContent>
-        </Card>
       </main>
     </div>
   );
