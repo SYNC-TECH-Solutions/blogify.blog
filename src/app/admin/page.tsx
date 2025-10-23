@@ -40,23 +40,31 @@ export default function AdminPage() {
   }, [auth]);
 
   useEffect(() => {
-    if (!firestore || !user) {
-      if (!loading) { // If we're done loading auth and there's no user, clear posts.
+    // Return early if firestore is not initialized or if the user is not logged in.
+    // Also, if auth is still loading, we shouldn't fetch.
+    if (!firestore || !user || loading) {
+      // If we are not loading auth anymore and there's no user, clear posts.
+      if (!loading && !user) {
         setPosts([]);
       }
       return;
-    };
+    }
 
     const postsCollection = collection(firestore, postsCollectionPath);
     // This query fetches all posts, ordered by creation date. 
-    // It does not filter by `isPublished`, so both drafts and published posts will appear.
+    // This is for the admin panel, so it should show both published and draft posts.
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const postsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      } as BlogPost));
+      const postsData = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data,
+            // Ensure isPublished is a boolean, defaulting to false if not present
+            isPublished: data.isPublished === true, 
+        } as BlogPost;
+      });
       setPosts(postsData);
     }, (error) => {
       const permissionError = new FirestorePermissionError({
@@ -66,9 +74,9 @@ export default function AdminPage() {
       errorEmitter.emit('permission-error', permissionError);
     });
 
+    // Cleanup the listener when the component unmounts or dependencies change.
     return () => unsubscribe();
-    // This effect now correctly depends on `user`, ensuring it re-runs when the user logs in.
-  }, [firestore, user, loading, toast]);
+  }, [firestore, user, loading]); // This effect now correctly depends on user and loading state.
 
 
   const handleAdminLoginSuccess = () => {
