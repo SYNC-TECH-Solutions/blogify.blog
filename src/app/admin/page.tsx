@@ -41,13 +41,15 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!firestore || !user) {
-      if (user === null && !loading) {
+      if (!loading) { // If we're done loading auth and there's no user, clear posts.
         setPosts([]);
       }
       return;
     };
 
     const postsCollection = collection(firestore, postsCollectionPath);
+    // This query fetches all posts, ordered by creation date. 
+    // It does not filter by `isPublished`, so both drafts and published posts will appear.
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -65,6 +67,7 @@ export default function AdminPage() {
     });
 
     return () => unsubscribe();
+    // This effect now correctly depends on `user`, ensuring it re-runs when the user logs in.
   }, [firestore, user, loading, toast]);
 
 
