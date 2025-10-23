@@ -8,7 +8,7 @@ import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import BlogView from '@/components/blog/BlogView';
 import { useRouter } from 'next/navigation';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, serverTimestamp } from 'firebase/firestore';
 import { useToast } from "@/hooks/use-toast";
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -52,8 +52,8 @@ export default function Home() {
         } as BlogPost))
         // Sort posts on the client-side
         .sort((a, b) => {
-          if (a.createdAt && b.createdAt) {
-            return b.createdAt.toMillis() - a.createdAt.toMillis();
+          if (a.updatedAt && b.updatedAt) {
+            return b.updatedAt.toMillis() - a.updatedAt.toMillis();
           }
           return 0;
         });

@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { onSnapshot, query, where, collection } from 'firebase/firestore';
+import { onSnapshot, query, where, collection, serverTimestamp } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import BlogView from '@/components/blog/BlogView';
@@ -64,7 +64,12 @@ export default function CategoryPage() {
           ...doc.data(),
         } as BlogPost))
         .filter(post => post.isPublished) // Filter for published posts on the client
-        .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis()); // Sort by date on the client
+        .sort((a, b) => {
+            if (a.updatedAt && b.updatedAt) {
+                return b.updatedAt.toMillis() - a.updatedAt.toMillis();
+            }
+            return 0;
+        }); // Sort by date on the client
       
       setPosts(postsData);
       setLoading(false);

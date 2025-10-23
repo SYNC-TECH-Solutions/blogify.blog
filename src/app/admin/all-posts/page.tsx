@@ -7,7 +7,7 @@ import { useAuth, useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import { useRouter } from 'next/navigation';
-import { collection, onSnapshot, query, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
@@ -101,8 +101,12 @@ export default function AllPostsPage() {
     if (!firestore) return;
     const postRef = doc(firestore, postsCollectionPath, post.id);
     const newStatus = !post.isPublished;
+    const postData = { 
+        isPublished: newStatus,
+        updatedAt: serverTimestamp() 
+    };
     
-    updateDoc(postRef, { isPublished: newStatus })
+    updateDoc(postRef, postData)
       .then(() => {
         toast({
           title: `Post ${newStatus ? 'Published' : 'Unpublished'}`,
@@ -113,7 +117,7 @@ export default function AllPostsPage() {
         const permissionError = new FirestorePermissionError({
           path: postRef.path,
           operation: 'update',
-          requestResourceData: { isPublished: newStatus },
+          requestResourceData: postData,
         });
         errorEmitter.emit('permission-error', permissionError);
       });
