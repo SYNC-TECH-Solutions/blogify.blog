@@ -5,41 +5,43 @@
  * This ruleset provides public read access to blog posts while restricting write access to authenticated administrators.
  *
  * Data Structure:
- * Blog posts are stored in a flat structure under `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`.  The `appId` is intended to identify a specific Blogify CMS application instance.
+ * Blog posts are stored in a flat structure under `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. The `appId` is a unique identifier for the application.
  *
  * Key Security Decisions:
- * - Public read access is granted to all blog posts.
- * - Write access (create, update, delete) is restricted to authenticated users.
- * - Schema validation is relaxed for rapid prototyping; however, the `authorId` field in the `BlogPost` entity will be validated on create operations to ensure it matches the authenticated user's UID.
+ * - Public read access is granted for all blog posts to allow wide consumption.
+ * - Write access (create, update, delete) is restricted to authenticated users only.
+ * - Schema validation is omitted in this prototyping phase for faster iteration.
+ *
+ * Denormalization for Authorization:
+ * Not applicable, since blog posts are public.
+ *
+ * Structural Segregation:
+ * All blog posts are stored under the `/public/data/blog_posts` collection, indicating they are intended for public consumption.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to blog posts and restricts write access to authenticated users.
+     * @description Allows public read access to blog posts and restricts write access to authenticated users.
      * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
-     * @allow (get, list): Any user can read blog posts.
-     * @allow (create): Only an authenticated user can create a blog post if the authorId matches their UID.
-     * @allow (update, delete): Only an authenticated user can update or delete a blog post.
-     * @deny (create): An unauthenticated user attempts to create a blog post.
-     * @deny (update, delete): An unauthenticated user attempts to update or delete a blog post.
-     * @principle Allows public reads, restricts writes to authenticated users
+     * @allow (get, list) Allow anyone to read any blog post.
+     * @allow (create, update, delete) Allow only authenticated users to write.
+     * @deny Any unauthenticated user to write.
+     * @principle Grants public read access while restricting write access to authenticated users.
      */
     match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
-      allow get, list: if true;
+      allow get: if true;
+      allow list: if true;
+
       allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && resource != null;
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
     }
+  }
 
-    // --- Helper functions ---
-
-    /**
-     * @description Checks if the user is signed in.
-     * @return True if the user is authenticated, false otherwise.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
+  // Helper function to check if a user is signed in.
+  function isSignedIn() {
+    return request.auth != null;
   }
 }
