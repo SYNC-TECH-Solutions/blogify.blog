@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -26,6 +26,7 @@ import { categories } from '@/lib/categories';
 import ContentEditor from './ContentEditor';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AdminDashboardProps {
   posts: BlogPost[];
@@ -45,6 +46,49 @@ const postSchema = z.object({
 type PostFormData = z.infer<typeof postSchema>;
 
 const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
+
+function PostList({
+  posts,
+  selectedPost,
+  onSelectPost,
+  onDeletePost,
+}: {
+  posts: BlogPost[];
+  selectedPost: BlogPost | null;
+  onSelectPost: (post: BlogPost) => void;
+  onDeletePost: (post: BlogPost) => void;
+}) {
+  return (
+    <ScrollArea className="h-[450px]">
+      <div className="space-y-2 p-4 pt-0">
+        {posts.map(post => (
+          <div key={post.id} className={`flex items-center justify-between p-3 rounded-lg ${selectedPost?.id === post.id ? 'bg-muted' : ''}`}>
+            <div>
+              <p className="font-semibold">{post.title}</p>
+              <div className="text-sm text-muted-foreground flex items-center gap-2">
+                <span>{post.updatedAt ? format(post.updatedAt.toDate(), 'MMM d, yyyy') : '...'}</span>
+                 {post.isPublished ? (
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">Published</Badge>
+                ) : (
+                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Draft</Badge>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" onClick={() => onSelectPost(post)}>
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => onDeletePost(post)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </ScrollArea>
+  );
+}
+
 
 export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -71,6 +115,13 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined, isPublished: true });
     }
   }, [selectedPost, form, user.displayName]);
+
+  const { publishedPosts, draftPosts } = useMemo(() => {
+    return {
+      publishedPosts: posts.filter(p => p.isPublished),
+      draftPosts: posts.filter(p => !p.isPublished),
+    };
+  }, [posts]);
 
   const onSubmit = async (data: PostFormData) => {
     if (!firestore) {
@@ -260,7 +311,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       </Card>
 
       <Card className="flex flex-col">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle>Your Posts</CardTitle>
           <Button size="sm" onClick={() => setSelectedPost(null)} variant="outline">
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -268,33 +319,37 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
           </Button>
         </CardHeader>
         <CardContent className="flex-grow p-0">
-          <ScrollArea className="h-[500px]">
-            <div className="space-y-2 p-4 pt-0">
-              {posts.map(post => (
-                <div key={post.id} className={`flex items-center justify-between p-3 rounded-lg ${selectedPost?.id === post.id ? 'bg-muted' : ''}`}>
-                  <div>
-                    <p className="font-semibold">{post.title}</p>
-                    <div className="text-sm text-muted-foreground flex items-center gap-2">
-                      <span>{post.updatedAt ? format(post.updatedAt.toDate(), 'MMM d, yyyy') : '...'}</span>
-                       {post.isPublished ? (
-                        <Badge variant="secondary" className="bg-green-100 text-green-800">Published</Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Draft</Badge>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setSelectedPost(post)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => openDeleteDialog(post)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all">All ({posts.length})</TabsTrigger>
+              <TabsTrigger value="published">Published ({publishedPosts.length})</TabsTrigger>
+              <TabsTrigger value="drafts">Drafts ({draftPosts.length})</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all">
+                <PostList 
+                  posts={posts}
+                  selectedPost={selectedPost}
+                  onSelectPost={setSelectedPost}
+                  onDeletePost={openDeleteDialog}
+                />
+            </TabsContent>
+            <TabsContent value="published">
+               <PostList 
+                  posts={publishedPosts}
+                  selectedPost={selectedPost}
+                  onSelectPost={setSelectedPost}
+                  onDeletePost={openDeleteDialog}
+                />
+            </TabsContent>
+            <TabsContent value="drafts">
+               <PostList 
+                  posts={draftPosts}
+                  selectedPost={selectedPost}
+                  onSelectPost={setSelectedPost}
+                  onDeletePost={openDeleteDialog}
+                />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
@@ -317,3 +372,5 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
     </div>
   );
 }
+
+    
