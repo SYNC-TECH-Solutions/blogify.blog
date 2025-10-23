@@ -8,7 +8,7 @@ import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
 import BlogView from '@/components/blog/BlogView';
 import { useRouter } from 'next/navigation';
-import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useToast } from "@/hooks/use-toast";
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -38,10 +38,10 @@ export default function Home() {
     setLoading(true);
 
     const postsCollection = collection(firestore, postsCollectionPath);
+    // Removed orderBy to avoid needing a composite index. Sorting will be done on the client.
     const q = query(
       postsCollection, 
-      where('isPublished', '==', true),
-      orderBy('createdAt', 'desc')
+      where('isPublished', '==', true)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -49,7 +49,14 @@ export default function Home() {
         .map(doc => ({
           id: doc.id,
           ...doc.data(),
-        } as BlogPost));
+        } as BlogPost))
+        // Sort posts on the client-side
+        .sort((a, b) => {
+          if (a.createdAt && b.createdAt) {
+            return b.createdAt.toMillis() - a.createdAt.toMillis();
+          }
+          return 0;
+        });
       
       setPosts(postsData);
       setLoading(false);
