@@ -28,6 +28,7 @@ export default function AllPostsPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'published' | 'drafts'>('all');
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
@@ -166,6 +167,16 @@ export default function AllPostsPage() {
       return 'Invalid date';
     }
   };
+  
+  const filteredPosts = posts.filter(post => {
+    if (filter === 'published') {
+      return post.isPublished;
+    }
+    if (filter === 'drafts') {
+      return !post.isPublished;
+    }
+    return true;
+  });
 
   if (!authChecked || loading) {
     return (
@@ -193,8 +204,20 @@ export default function AllPostsPage() {
             <CardDescription>A complete list of every post in the database, both published and drafts.</CardDescription>
           </CardHeader>
           
+          <div className="flex space-x-2 mb-6">
+            <Button variant={filter === 'all' ? 'default' : 'outline'} onClick={() => setFilter('all')}>
+              All
+            </Button>
+            <Button variant={filter === 'published' ? 'default' : 'outline'} onClick={() => setFilter('published')}>
+              Published
+            </Button>
+            <Button variant={filter === 'drafts' ? 'default' : 'outline'} onClick={() => setFilter('drafts')}>
+              Drafts
+            </Button>
+          </div>
+
             <div className="space-y-8">
-              {posts.map(post => (
+              {filteredPosts.map(post => (
                 <Card key={post.id}>
                   <CardHeader>
                     <CardTitle>{post.title}</CardTitle>
