@@ -80,7 +80,7 @@ export default function AllPostsPage() {
       />
       
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-8">All Database Posts</h1>
+        <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-8">All Posts from Firestore Database</h1>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <Loader className="h-12 w-12" />
