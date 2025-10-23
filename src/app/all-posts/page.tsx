@@ -6,12 +6,12 @@ import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useAuth, useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import Header from '@/components/blog/Header';
-import BlogView from '@/components/blog/BlogView';
 import { useRouter } from 'next/navigation';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
@@ -80,14 +80,24 @@ export default function AllPostsPage() {
       />
       
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-8">All Posts from Firestore Database</h1>
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader className="h-12 w-12" />
-          </div>
-        ) : (
-          <BlogView posts={posts} />
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-4xl font-extrabold text-foreground tracking-tight">All Posts from Firestore Database</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <Loader className="h-12 w-12" />
+              </div>
+            ) : (
+              <ul className="list-disc pl-5 space-y-2">
+                {posts.map(post => (
+                  <li key={post.id} className="text-lg">{post.title}</li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
