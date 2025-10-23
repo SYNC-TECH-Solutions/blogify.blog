@@ -24,6 +24,8 @@ import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { categories } from '@/lib/categories';
 import ContentEditor from './ContentEditor';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 
 interface AdminDashboardProps {
   posts: BlogPost[];
@@ -37,6 +39,7 @@ const postSchema = z.object({
   category: z.enum(categories as [string, ...string[]], {
     required_error: "You need to select a category.",
   }),
+  isPublished: z.boolean().default(true),
 });
 
 type PostFormData = z.infer<typeof postSchema>;
@@ -52,7 +55,7 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
-    defaultValues: { title: '', content: '', authorName: '' },
+    defaultValues: { title: '', content: '', authorName: '', isPublished: true },
   });
 
   useEffect(() => {
@@ -62,9 +65,10 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         content: selectedPost.content,
         authorName: selectedPost.authorName,
         category: selectedPost.category,
+        isPublished: selectedPost.isPublished,
       });
     } else {
-      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined });
+      form.reset({ title: '', content: '', authorName: user.displayName || 'Admin', category: undefined, isPublished: true });
     }
   }, [selectedPost, form, user.displayName]);
 
@@ -102,7 +106,6 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
       const postData = {
         ...data,
         authorId: user.uid,
-        isPublished: true, // This was missing
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
@@ -160,6 +163,25 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+               <div className="flex items-center space-x-2">
+                <FormField
+                  control={form.control}
+                  name="isPublished"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm w-full">
+                      <div className="space-y-0.5">
+                        <FormLabel>Publish Post</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="title"
@@ -252,8 +274,13 @@ export default function AdminDashboard({ posts, user }: AdminDashboardProps) {
                 <div key={post.id} className={`flex items-center justify-between p-3 rounded-lg ${selectedPost?.id === post.id ? 'bg-muted' : ''}`}>
                   <div>
                     <p className="font-semibold">{post.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Updated: {post.updatedAt ? format(post.updatedAt.toDate(), 'MMM d, yyyy') : '...'}
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span>{post.updatedAt ? format(post.updatedAt.toDate(), 'MMM d, yyyy') : '...'}</span>
+                       {post.isPublished ? (
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">Published</Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Draft</Badge>
+                      )}
                     </p>
                   </div>
                   <div className="flex gap-2">
