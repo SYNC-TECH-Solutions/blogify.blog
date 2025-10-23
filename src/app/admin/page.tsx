@@ -41,13 +41,13 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!firestore || !user) {
-      if(user === null) return; // Still loading or logged out
       setPosts([]);
       return;
     };
 
     const postsCollection = collection(firestore, postsCollectionPath);
     const q = query(postsCollection, orderBy('createdAt', 'desc'));
+    
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const postsData = snapshot.docs.map(doc => ({
         id: doc.id,
