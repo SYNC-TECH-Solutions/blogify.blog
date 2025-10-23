@@ -41,7 +41,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!firestore || !user) {
-      setPosts([]);
+      if (user === null && auth) { // If auth is initialized but user is null (logged out)
+        setPosts([]);
+      }
       return;
     };
 
@@ -63,7 +65,7 @@ export default function AdminPage() {
     });
 
     return () => unsubscribe();
-  }, [firestore, user, toast]);
+  }, [firestore, user, auth, toast]);
 
 
   const handleAdminLoginSuccess = () => {
