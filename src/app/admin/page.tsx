@@ -51,7 +51,15 @@ export default function AdminPage() {
         } else {
           toast({ title: "Error", description: "Post to edit not found.", variant: "destructive" });
         }
+      }).catch(error => {
+          const permissionError = new FirestorePermissionError({
+            path: postRef.path,
+            operation: 'get',
+          });
+          errorEmitter.emit('permission-error', permissionError);
       });
+    } else {
+        setPostToEdit(null);
     }
   }, [searchParams, firestore, toast]);
 
