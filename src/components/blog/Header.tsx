@@ -138,7 +138,7 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/all-posts">
+                  <Link href="/admin/all-posts">
                     <Archive className="mr-2 h-4 w-4" />
                     <span>All Posts</span>
                   </Link>

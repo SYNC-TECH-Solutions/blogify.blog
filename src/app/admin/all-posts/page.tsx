@@ -21,6 +21,7 @@ export default function AllPostsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
   const auth = useAuth();
   const firestore = useFirestore();
   const router = useRouter();
@@ -29,16 +30,24 @@ export default function AllPostsPage() {
     if (!auth) return;
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setAuthChecked(true);
     });
     return () => unsubscribeAuth();
   }, [auth]);
 
   useEffect(() => {
-    if (!firestore) return;
+    if (!firestore || !user) {
+      if(authChecked && !user) {
+         router.push('/admin'); // Redirect to admin login if not authenticated
+      }
+      setPosts([]);
+      setLoading(false);
+      return;
+    };
+    
     setLoading(true);
 
     const postsCollection = collection(firestore, postsCollectionPath);
-    // Query for all posts. Sorting is removed to avoid needing an index and ensure all posts are fetched.
     const q = query(
       postsCollection
     );
@@ -51,7 +60,10 @@ export default function AllPostsPage() {
         } as BlogPost))
         .sort((a, b) => {
             if (a.createdAt && b.createdAt) {
-                return b.createdAt.toMillis() - a.createdAt.toMillis();
+                // Firestore Timestamps have a toMillis() method
+                const aMillis = a.createdAt.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt as any).getTime();
+                const bMillis = b.createdAt.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt as any).getTime();
+                return bMillis - aMillis;
             }
             return 0;
         });
@@ -68,7 +80,7 @@ export default function AllPostsPage() {
     });
 
     return () => unsubscribe();
-  }, [firestore]);
+  }, [firestore, user, authChecked, router]);
 
 
   const handleLogout = () => {
@@ -81,17 +93,28 @@ export default function AllPostsPage() {
   
   const formatDate = (date: any) => {
     if (!date) return '...';
-    // Check if it's a Firestore Timestamp
     if (date.toDate) {
       return format(date.toDate(), 'MMMM d, yyyy');
     }
-    // Check if it's a regular Date object or a string
     try {
       return format(new Date(date), 'MMMM d, yyyy');
     } catch (e) {
       return 'Invalid date';
     }
   };
+
+  if (!authChecked || loading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background">
+        <Loader className="h-12 w-12" />
+      </div>
+    )
+  }
+  
+  if(!user){
+    // This will be rendered briefly before the redirect in useEffect kicks in
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -106,31 +129,25 @@ export default function AllPostsPage() {
             <CardDescription>A complete list of every post in the database, both published and drafts.</CardDescription>
           </CardHeader>
           
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <Loader className="h-12 w-12" />
-              </div>
-            ) : (
-              <div className="space-y-8">
-                {posts.map(post => (
-                  <Card key={post.id}>
-                    <CardHeader>
-                      <CardTitle>{post.title}</CardTitle>
-                      <CardDescription>
-                        By {post.authorName || 'Anonymous'} on {formatDate(post.createdAt)} - {post.isPublished ? "Published" : "Draft"}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                       <div className="prose prose-lg dark:prose-invert max-w-none">
-                          <ReactMarkdown skipHtml={true}>
-                              {post.content}
-                          </ReactMarkdown>
-                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+            <div className="space-y-8">
+              {posts.map(post => (
+                <Card key={post.id}>
+                  <CardHeader>
+                    <CardTitle>{post.title}</CardTitle>
+                    <CardDescription>
+                      By {post.authorName || 'Anonymous'} on {formatDate(post.createdAt)} - {post.isPublished ? "Published" : "Draft"}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="prose prose-lg dark:prose-invert max-w-none">
+                        <ReactMarkdown skipHtml={true}>
+                            {post.content}
+                        </ReactMarkdown>
+                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
       </main>
     </div>
   );
