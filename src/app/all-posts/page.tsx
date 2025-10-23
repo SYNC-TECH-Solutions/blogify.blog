@@ -36,10 +36,9 @@ export default function AllPostsPage() {
     setLoading(true);
 
     const postsCollection = collection(firestore, postsCollectionPath);
-    // Query for all posts, ordered by creation date
+    // Query for all posts. Sorting is removed to avoid needing an index and ensure all posts are fetched.
     const q = query(
-      postsCollection, 
-      orderBy('createdAt', 'desc')
+      postsCollection
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
