@@ -225,6 +225,54 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
           <CardTitle>{selectedPost ? 'Edit Post' : 'Create New Post'}</CardTitle>
         </CardHeader>
         <CardContent>
+          {/*
+            "Please create a comprehensive `AdminDashboard` component for a Next.js application that allows an admin to create, edit, view, and manage blog posts.
+
+            **Layout & Structure:**
+
+            1.  Use a responsive two-column layout. The left column (spanning 2/3 of the width on medium screens and up) will contain the post editor form. The right column (spanning 1/3) will display the list of existing posts.
+            2.  Both columns should be styled using ShadCN's `<Card>` component.
+
+            **Post Editor Form (Left Column):**
+
+            1.  **Functionality:** The form should serve for both creating new posts and editing existing ones. When an existing post is selected from the list, the form should populate with that post's data. When no post is selected, it should be a "Create New Post" form.
+            2.  **Form Management:** Use `react-hook-form` with the `zod` resolver for robust validation.
+            3.  **Schema:** Create a Zod schema that validates the following fields:
+                *   `title`: A non-empty string.
+                *   `content`: A non-empty string.
+                *   `authorName`: A non-empty string.
+                *   `category`: A string selected from a predefined list of categories.
+                *   `isPublished`: A boolean, defaulting to `false`.
+            4.  **UI Components:** Use the following ShadCN components for the form fields:
+                *   `<Switch>` for the `isPublished` status. This should be prominently displayed at the top.
+                *   `<Input>` for `title` and `authorName`.
+                *   `<Select>` for the `category`, populated with a list of categories (e.g., "Sports", "Tech").
+                *   A custom `ContentEditor` component for the `content` field. This editor should support basic Markdown formatting (headings, bold, italic, lists, links, etc.) and use a `<Textarea>`.
+            5.  **Actions:**
+                *   A "Save Post" button to submit the form. This button should handle both creating new posts (`addDoc`) and updating existing ones (`setDoc` with merge). It should display "Saving..." while submitting.
+                *   A "Cancel" button that appears only when editing a post, which clears the form and resets to "Create" mode.
+                *   All Firestore write operations must include robust, non-blocking error handling that uses a global `errorEmitter` to emit a `FirestorePermissionError` on failure.
+                *   Upon successful creation or update, display a toast notification.
+
+            **Post List (Right Column):**
+
+            1.  **Display:** Show a list of all posts retrieved from Firestore.
+            2.  **Filtering:** Implement tabs using `<Tabs>` to filter the list by "All," "Published," and "Drafts." Each tab should show a count of the posts in that category.
+            3.  **List Item:** Each post in the list should display:
+                *   The post title.
+                *   The last updated date.
+                *   A `<Badge>` indicating its status ("Published" or "Draft").
+                *   An "Edit" `<Button>` (`<Edit>` icon) to load the post into the editor form.
+                *   A "Delete" `<Button>` (`<Trash2>` icon) to remove the post.
+            4.  **Actions:**
+                *   **Create New:** Include a "New" button with a `<PlusCircle>` icon at the top to clear the editor form and start a new post.
+                *   **Deletion:** Clicking the "Delete" button should trigger an `<AlertDialog>` to confirm the action before permanently deleting the post from Firestore.
+
+            **Component Integration:**
+
+            *   The `AdminDashboard` component should accept `posts`, the authenticated `user`, an optional `initialPost` for editing, and an `onClearEdit` callback function as props.
+            *   The component should manage its own internal state, such as the currently selected post and the delete confirmation dialog."
+          */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                <div className="flex items-center space-x-2">
@@ -386,4 +434,5 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
   );
 }
 
+    
     
