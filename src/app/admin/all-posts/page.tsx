@@ -68,6 +68,7 @@ export default function AllPostsPage() {
         } as BlogPost))
         .sort((a, b) => {
             if (a.updatedAt && b.updatedAt) {
+                // Handle both Timestamps and string dates
                 const aMillis = a.updatedAt.toMillis ? a.updatedAt.toMillis() : new Date(a.updatedAt as any).getTime();
                 const bMillis = b.updatedAt.toMillis ? b.updatedAt.toMillis() : new Date(b.updatedAt as any).getTime();
                 return bMillis - aMillis;
