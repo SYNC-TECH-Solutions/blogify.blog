@@ -17,7 +17,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 
 const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
-export default function AdminPage() {
+function AdminPageInternal() {
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -157,5 +157,17 @@ export default function AdminPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <React.Suspense fallback={
+        <div className="flex h-screen w-screen items-center justify-center bg-background">
+            <Loader className="h-12 w-12" />
+        </div>
+    }>
+        <AdminPageInternal />
+    </React.Suspense>
   );
 }
