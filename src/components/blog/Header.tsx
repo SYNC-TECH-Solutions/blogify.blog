@@ -3,7 +3,7 @@
 
 import { User } from "firebase/auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss, Archive } from "lucide-react";
+import { LogOut, UserCircle, LayoutDashboard, Menu, Facebook, Instagram, Twitter, Rss, Archive, CreditCard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,6 +63,11 @@ export default function Header({ user, onLogout }: HeaderProps) {
                 <Separator className="my-4" />
                 <nav className="pr-4">
                   <ul className="space-y-2">
+                     <li>
+                      <Link href="/subscriptions" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
+                        Subscriptions
+                      </Link>
+                    </li>
                     <li>
                       <Link href="/about" className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted">
                         About blogify.blog
@@ -141,6 +146,12 @@ export default function Header({ user, onLogout }: HeaderProps) {
                   <Link href="/admin/all-posts">
                     <Archive className="mr-2 h-4 w-4" />
                     <span>All Posts</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                   <Link href="/subscriptions">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    <span>Subscriptions</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onLogout}>

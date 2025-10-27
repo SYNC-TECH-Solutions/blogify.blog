@@ -1,3 +1,4 @@
+
 import { MetadataRoute } from 'next'
 import { categories } from '@/lib/categories';
  
@@ -35,6 +36,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
+    },
+    {
+      url: `${URL}/subscriptions`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
   ] satisfies MetadataRoute.Sitemap;
 
