@@ -1,3 +1,4 @@
+
 import type { Timestamp } from "firebase/firestore";
 
 export interface BlogPost {
@@ -17,6 +18,7 @@ export interface Subscription {
   userId: string;
   stripeCustomerId: string;
   stripeSubscriptionId: string;
+  stripePriceId: string;
   status: 'active' | 'canceled' | 'incomplete' | 'trialing' | string;
   createdAt: Timestamp;
   updatedAt: Timestamp;

@@ -3,6 +3,8 @@
 
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
+import { getAuth } from 'firebase-admin/auth';
+import { initializeFirebase } from '@/firebase/server';
 
 // Ensure the secret key is provided. Throw an error at startup if not set.
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -15,7 +17,7 @@ const stripe = new Stripe(stripeSecretKey, {
     typescript: true,
 });
 
-export async function createCheckoutSession() {
+export async function createCheckoutSession(userId: string) {
     // Ensure the price ID is provided.
     const priceId = process.env.STRIPE_PRICE_ID;
     if (!priceId) {
@@ -42,6 +44,8 @@ export async function createCheckoutSession() {
             mode: 'subscription',
             success_url: `${origin}/?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/subscriptions`,
+            // Pass the user's ID to the checkout session
+            client_reference_id: userId,
         });
 
         // The session URL should always be present on successful creation.

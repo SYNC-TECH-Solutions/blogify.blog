@@ -50,7 +50,7 @@ export default function SubscriptionsPage() {
         }
 
         try {
-            const { url } = await createCheckoutSession();
+            const { url } = await createCheckoutSession(user.uid);
             if (url) {
                 router.push(url);
             } else {
