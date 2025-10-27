@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader } from '@/components/ui/loader';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import Link from 'next/link';
 
 const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
 
@@ -89,15 +90,21 @@ export default function Home() {
       />
       
       {/* Desktop Ad Placeholders */}
-      <aside className="hidden lg:block fixed left-4 top-20 w-40 h-[600px] bg-muted/40 rounded-lg shadow">
-          <div className="flex items-center justify-center h-full">
-              <p className="text-muted-foreground text-sm">Vertical Ad</p>
-          </div>
+      <aside className="hidden lg:block fixed left-4 top-20 w-40">
+          <Link href="/subscriptions" className="block p-4 bg-muted/40 rounded-lg shadow hover:bg-muted/60 transition-colors h-full">
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                  <h4 className="font-bold text-sm text-foreground">Your Content Engine. One Line of Code.</h4>
+                  <p className="text-muted-foreground text-xs mt-2">Turn your website into a content powerhouse. Just copy, paste, and go.</p>
+              </div>
+          </Link>
       </aside>
-      <aside className="hidden lg:block fixed right-4 top-20 w-40 h-[600px] bg-muted/40 rounded-lg shadow">
-          <div className="flex items-center justify-center h-full">
-              <p className="text-muted-foreground text-sm">Vertical Ad</p>
-          </div>
+      <aside className="hidden lg:block fixed right-4 top-20 w-40">
+          <Link href="/subscriptions" className="block p-4 bg-muted/40 rounded-lg shadow hover:bg-muted/60 transition-colors h-full">
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                  <h4 className="font-bold text-sm text-foreground">Give Your Community a Voice.</h4>
+                  <p className="text-muted-foreground text-xs mt-2">Transform passive visitors into active creators. Unlock community-driven content.</p>
+              </div>
+          </Link>
       </aside>
 
       <main className="flex-grow container max-w-4xl mx-auto px-4 py-8">

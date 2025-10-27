@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import { Share2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import React from 'react';
+import Link from 'next/link';
 
 interface BlogViewProps {
   posts: BlogPost[];
@@ -126,9 +127,15 @@ export default function BlogView({ posts }: BlogViewProps) {
                 </CardFooter>
               </Card>
               {/* Mobile Ad Placeholder */}
-              <div className="md:hidden w-full h-64 bg-muted/40 flex items-center justify-center rounded-lg shadow">
-                <p className="text-muted-foreground">Ad Placeholder</p>
-              </div>
+              {(index + 1) % 2 === 0 && (
+                <div className="md:hidden w-full h-auto bg-muted/40 flex items-center justify-center rounded-lg shadow p-6">
+                  <Link href="/subscriptions" className="flex flex-col items-center justify-center text-center">
+                      <h4 className="font-bold text-base text-foreground">More Content. Better SEO. Zero Effort.</h4>
+                      <p className="text-muted-foreground text-sm mt-2">Let your users and our AI write your blog for you. See your search rankings climb.</p>
+                      <Button size="sm" className="mt-4">Get Your Embed</Button>
+                  </Link>
+                </div>
+              )}
             </React.Fragment>
           ))}
         </div>

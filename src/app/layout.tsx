@@ -6,6 +6,8 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import Footer from '@/components/blog/Footer';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,6 +36,15 @@ export default function RootLayout({
         <FirebaseClientProvider>
           <div className="flex-grow">
             {children}
+          </div>
+          <div className="container max-w-7xl mx-auto px-4 py-8">
+             <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 text-center">
+                <h3 className="text-xl font-bold text-foreground">Infinite Content. Price of a Coffee.</h3>
+                <p className="text-muted-foreground mt-2 mb-4 max-w-2xl mx-auto">Unleash an endless stream of user-generated articles and boost your SEO for just €2.99 a month.</p>
+                <Link href="/subscriptions">
+                    <Button>Subscribe Now</Button>
+                </Link>
+            </div>
           </div>
           <Footer />
         </FirebaseClientProvider>
