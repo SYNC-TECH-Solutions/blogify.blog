@@ -72,6 +72,46 @@
         "displayName",
         "email"
       ]
+    },
+    "Subscription": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subscription",
+      "type": "object",
+      "description": "Represents a user's subscription.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user."
+        },
+        "stripeCustomerId": {
+          "type": "string",
+          "description": "The Stripe customer ID."
+        },
+        "stripeSubscriptionId": {
+          "type": "string",
+          "description": "The Stripe subscription ID."
+        },
+        "status": {
+          "type": "string",
+          "description": "The status of the subscription (e.g., 'active', 'canceled')."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the subscription was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the subscription was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "stripeCustomerId",
+        "stripeSubscriptionId",
+        "status"
+      ]
     }
   },
   "auth": {
@@ -101,8 +141,18 @@
             }
           ]
         }
+      },
+      {
+        "path": "/users/{userId}/subscription",
+        "definition": {
+          "entityName": "Subscription",
+          "schema": {
+            "$ref": "#/backend/entities/Subscription"
+          },
+          "description": "Stores a user's subscription details."
+        }
       }
     ],
-    "reasoning": "This Firestore data structure is designed to support a blog CMS with real-time updates and secure admin access, emphasizing authorization independence, clarity, and scalability. All blog posts are stored under a predictable path, `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. This flat structure simplifies security rules and eliminates the need for complex hierarchical authorization. Since the blog posts are all public, no user-based hierarchy is required, and no denormalization is necessary. The application enforces security at two layers: Firebase Authentication (Layer 1) and a local UI gate (Layer 2), as described in the prompt. The Firebase Authentication ensures that only the authenticated admin (verified via custom token) can perform write operations. The local UI gate provides an additional layer of security, requiring a password to access the Admin Dashboard. This separation of concerns enhances security and maintainability."
+    "reasoning": "This Firestore data structure is designed to support a blog CMS with real-time updates and secure admin access, emphasizing authorization independence, clarity, and scalability. All blog posts are stored under a predictable path, `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. This flat structure simplifies security rules and eliminates the need for complex hierarchical authorization. Since the blog posts are all public, no user-based hierarchy is required, and no denormalization is necessary. The application enforces security at two layers: Firebase Authentication (Layer 1) and a local UI gate (Layer 2), as described in the prompt. The Firebase Authentication ensures that only the authenticated admin can perform write operations. The local UI gate provides an additional layer of security, requiring a password to access the Admin Dashboard. This separation of concerns enhances security and maintainability. A `Subscription` entity has been added to manage user subscriptions, stored under a `/users/{userId}/subscription` path to associate it with a specific user."
   }
 }
