@@ -9,11 +9,16 @@ import { useAuth } from '@/firebase';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { Check, Edit3, Eye, Zap, Users, Gem, Rocket } from 'lucide-react';
+import { createCheckoutSession } from '@/app/actions/stripe';
+import { useToast } from '@/hooks/use-toast';
+import { Loader } from '@/components/ui/loader';
 
 export default function SubscriptionsPage() {
     const [user, setUser] = React.useState<User | null>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
     const auth = useAuth();
     const router = useRouter();
+    const { toast } = useToast();
 
     React.useEffect(() => {
         if (!auth) return;
@@ -31,14 +36,33 @@ export default function SubscriptionsPage() {
         }
     };
 
-    const handleSubscribe = () => {
-        // We will implement the Stripe Checkout logic here in the next step.
-        console.log(`Subscribing to plan: €2.99/month`);
+    const handleSubscribe = async () => {
+        setIsLoading(true);
         if (!user) {
-            router.push('/admin'); // Or your dedicated login page
-        } else {
-            // Placeholder for Stripe logic
-            alert(`Next step: Integrate Stripe Checkout`);
+            toast({
+                title: "Authentication Required",
+                description: "Please log in to subscribe.",
+                variant: "destructive"
+            });
+            router.push('/admin'); 
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const { url } = await createCheckoutSession();
+            if (url) {
+                router.push(url);
+            } else {
+                throw new Error("Could not create checkout session.");
+            }
+        } catch (error: any) {
+            toast({
+                title: "Subscription Error",
+                description: error.message || "An unexpected error occurred. Please try again.",
+                variant: "destructive",
+            });
+            setIsLoading(false);
         }
     };
 
@@ -160,8 +184,9 @@ export default function SubscriptionsPage() {
 
                     <div className="text-center space-y-4">
                         <p className="text-lg text-muted-foreground">Ready to get started? Integrating our powerful tools is as simple as copying and pasting a snippet of code.</p>
-                        <Button size="lg" className="text-lg" onClick={handleSubscribe}>
-                            Subscribe Now for just €2.99/month
+                        <Button size="lg" className="text-lg" onClick={handleSubscribe} disabled={isLoading}>
+                            {isLoading ? <Loader className="mr-2 h-5 w-5 animate-spin" /> : null}
+                            {isLoading ? "Redirecting..." : "Subscribe Now for just €2.99/month"}
                         </Button>
                          <p className="text-sm text-muted-foreground">
                             Payments are securely processed by Stripe. You can cancel your subscription at any time.
