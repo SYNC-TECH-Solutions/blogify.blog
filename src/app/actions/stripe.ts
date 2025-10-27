@@ -4,21 +4,30 @@
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+// Ensure the secret key is provided. Throw an error at startup if not set.
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeSecretKey) {
+    throw new Error('STRIPE_SECRET_KEY is not set in the environment variables.');
+}
+
+const stripe = new Stripe(stripeSecretKey, {
     apiVersion: '2024-06-20',
+    typescript: true,
 });
 
 export async function createCheckoutSession() {
+    // Ensure the price ID is provided.
     const priceId = process.env.STRIPE_PRICE_ID;
     if (!priceId) {
-        throw new Error('Stripe Price ID is not configured in the environment variables.');
+        throw new Error('Stripe Price ID (STRIPE_PRICE_ID) is not configured in the environment variables.');
     }
     
     const headersList = headers();
     const origin = headersList.get('origin');
 
     if (!origin) {
-        throw new Error('Could not determine request origin.');
+        // This is a fallback for safety, though 'origin' should typically be present.
+        throw new Error('Could not determine the request origin. The checkout session cannot be created without it.');
     }
 
     try {
@@ -35,9 +44,18 @@ export async function createCheckoutSession() {
             cancel_url: `${origin}/subscriptions`,
         });
 
+        // The session URL should always be present on successful creation.
+        if (!session.url) {
+            throw new Error("Stripe session created successfully, but no URL was returned.");
+        }
+
         return { url: session.url };
     } catch (error: any) {
+        // Log the detailed error on the server for debugging.
         console.error("Error creating Stripe checkout session:", error);
-        throw new Error(error.message || "Failed to create Stripe session.");
+
+        // Return a user-friendly error message.
+        // Avoid leaking detailed Stripe error messages to the client.
+        throw new Error("An unexpected error occurred while creating the checkout session. Please try again later.");
     }
 }
