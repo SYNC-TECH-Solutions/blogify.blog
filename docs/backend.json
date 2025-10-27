@@ -143,16 +143,16 @@
         }
       },
       {
-        "path": "/users/{userId}/subscription",
+        "path": "/subscriptions/{subscriptionId}",
         "definition": {
           "entityName": "Subscription",
           "schema": {
             "$ref": "#/backend/entities/Subscription"
           },
-          "description": "Stores a user's subscription details."
+          "description": "Stores all user subscription details in a single collection for admin access."
         }
       }
     ],
-    "reasoning": "This Firestore data structure is designed to support a blog CMS with real-time updates and secure admin access, emphasizing authorization independence, clarity, and scalability. All blog posts are stored under a predictable path, `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. This flat structure simplifies security rules and eliminates the need for complex hierarchical authorization. Since the blog posts are all public, no user-based hierarchy is required, and no denormalization is necessary. The application enforces security at two layers: Firebase Authentication (Layer 1) and a local UI gate (Layer 2), as described in the prompt. The Firebase Authentication ensures that only the authenticated admin can perform write operations. The local UI gate provides an additional layer of security, requiring a password to access the Admin Dashboard. This separation of concerns enhances security and maintainability. A `Subscription` entity has been added to manage user subscriptions, stored under a `/users/{userId}/subscription` path to associate it with a specific user."
+    "reasoning": "This Firestore data structure is designed to support a blog CMS with real-time updates and secure admin access, emphasizing authorization independence, clarity, and scalability. All blog posts are stored under a predictable path, `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`. This flat structure simplifies security rules and eliminates the need for complex hierarchical authorization. Since the blog posts are all public, no user-based hierarchy is required, and no denormalization is necessary. The application enforces security at two layers: Firebase Authentication (Layer 1) and a local UI gate (Layer 2), as described in the prompt. The Firebase Authentication ensures that only the authenticated admin can perform write operations. The local UI gate provides an additional layer of security, requiring a password to access the Admin Dashboard. This separation of concerns enhances security and maintainability. A `Subscription` entity has been added to manage user subscriptions, stored under a `/subscriptions/{subscriptionId}` path to allow admins to easily query and manage all subscriptions."
   }
 }
