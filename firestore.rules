@@ -1,43 +1,66 @@
 /**
- * @file Overview
- * This ruleset secures the Blogify CMS blog post data stored in Firestore.
+ * @fileoverview Firestore Security Rules for Blogify CMS.
  *
- * @core_philosophy All blog posts are treated as publicly readable, but write access is strictly limited to authenticated administrators.
+ * Core Philosophy:
+ * This ruleset provides public read access to blog posts, while restricting write access to authenticated users (admins).
+ * Subscriptions are managed by admins only.
  *
- * @data_structure Blog posts are stored in a flat structure under the path `/artifacts/{appId}/public/data/blog_posts/{blogPostId}`.  The `appId` identifies the Blogify CMS application, and `blogPostId` is the unique ID of the blog post.
+ * Data Structure:
+ * - /artifacts/{appId}/public/data/blog_posts/{blogPostId}: Stores public blog post data.
+ * - /subscriptions/{subscriptionId}: Stores subscription data, accessible only to admins.
  *
- * @key_security_decisions
- *   - Public read access for all blog posts.
- *   - Strict restriction of write access (create, update, delete) to authenticated users only. There are no role based permissions. All authenticated users can modify the data.
- *   - Listing of blog posts is allowed for everyone.
+ * Key Security Decisions:
+ * - Public read access for blog posts is enabled.
+ * - Admin role is implicitly determined by authentication status. Only authenticated users can write blog posts or subscriptions.
+ * - The rules do NOT enforce the exact schema of the data, focusing on access control.
  *
- * @denormalization_for_authorization Not applicable, as all data is public and write access is limited to admins.
+ * Denormalization for Authorization:
+ * - None: Blog posts are publicly readable; admin status is determined by authentication.
  *
- * @structural_segregation Not applicable, as drafts are not separated into private collections.
+ * Structural Segregation:
+ * - Public blog posts are stored in a top-level collection, separate from any private user data.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Secures blog posts, allowing public read access and authenticated-user-only write access.
+     * @description Allows public read access to blog posts, but restricts write access to authenticated users.
      * @path /artifacts/{appId}/public/data/blog_posts/{blogPostId}
      * @allow (get, list): Any user can read blog posts.
-     * @allow (create, update, delete): Only authenticated users can write blog posts.
-     * @deny (create, update, delete): Unauthenticated users cannot write blog posts.
-     * @principle Allows public read but restricts write access to authenticated admins.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete blog posts.
+     * @deny (create, update, delete): Unauthenticated users cannot create, update, or delete blog posts.
+     * @principle Public read, admin-only write.
      */
     match /artifacts/{appId}/public/data/blog_posts/{blogPostId} {
       allow get: if true;
       allow list: if true;
+
       allow create: if isSignedIn();
       allow update: if isSignedIn() && resource != null;
       allow delete: if isSignedIn() && resource != null;
     }
-  }
 
-  // Helper function to determine if the user is signed in.
-  function isSignedIn() {
-    return request.auth != null;
+    /**
+     * @description Restricts access to subscriptions collection to authenticated users (admins).
+     * @path /subscriptions/{subscriptionId}
+     * @allow (get, list): Only authenticated users can read subscription data.
+     * @allow (create, update, delete): Only authenticated users can create, update, or delete subscription data.
+     * @deny (create, update, delete): Unauthenticated users cannot create, update, or delete subscription data.
+     * @principle Admin-only access.
+     */
+    match /subscriptions/{subscriptionId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && resource != null;
+      allow delete: if isSignedIn() && resource != null;
+    }
+
+    // Helper function to determine if a user is signed in
+    function isSignedIn() {
+      return request.auth != null;
+    }
   }
 }
