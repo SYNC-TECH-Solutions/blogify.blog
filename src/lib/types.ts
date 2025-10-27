@@ -11,3 +11,13 @@ export interface BlogPost {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export interface Subscription {
+  id: string;
+  userId: string;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  status: 'active' | 'canceled' | 'incomplete' | 'trialing' | string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
