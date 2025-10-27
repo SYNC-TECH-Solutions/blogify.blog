@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/firebase';
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { Check, Edit3, Eye, Zap } from 'lucide-react';
+import { Check, Edit3, Eye, Zap, Users, Gem, Rocket } from 'lucide-react';
 
 export default function SubscriptionsPage() {
     const [user, setUser] = React.useState<User | null>(null);
@@ -42,26 +42,26 @@ export default function SubscriptionsPage() {
         }
     };
 
-    const features = [
+    const powerFeatures = [
         {
-            icon: <Zap className="h-6 w-6 text-primary" />,
-            title: "Foster Community",
-            description: "Turn passive visitors into active contributors.",
+            icon: <Users className="h-8 w-8 text-primary" />,
+            title: "Power of Community Engagement",
+            description: "Give your users a voice. Turn passive visitors into active contributors, fostering a powerful sense of community and loyalty around your brand.",
         },
         {
-            icon: <Zap className="h-6 w-6 text-primary" />,
-            title: "Save Time & Resources",
-            description: "Generate a constant stream of authentic content without lifting a finger.",
+            icon: <Gem className="h-8 w-8 text-primary" />,
+            title: "Power of Effortless Content Generation",
+            description: "Create a self-sustaining engine for authentic articles, including an AI assistant that can produce 5,000-word, SEO-optimized posts from a single prompt.",
         },
         {
-            icon: <Zap className="h-6 w-6 text-primary" />,
-            title: "Increase Authority",
-            description: "Build a knowledge base that positions your brand as an industry leader.",
+            icon: <Zap className="h-8 w-8 text-primary" />,
+            title: "Power of Simplicity and Speed",
+            description: "No need for a team of developers. Simply copy a line of code, paste it into your HTML, and your fully-featured content solution is live in minutes.",
         },
         {
-            icon: <Zap className="h-6 w-6 text-primary" />,
-            title: "Incredibly Affordable",
-            description: "All this for the price of a coffee. A low-risk, high-reward investment.",
+            icon: <Rocket className="h-8 w-8 text-primary" />,
+            title: "Power of Enhanced SEO & Authority",
+            description: "A steady stream of fresh, high-quality content drives organic traffic, improves search rankings, and establishes your site as an industry authority.",
         },
     ]
 
@@ -73,13 +73,13 @@ export default function SubscriptionsPage() {
                     <Card className="bg-primary/10 border-primary shadow-lg overflow-hidden">
                         <div className="p-8 text-center">
                             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground">
-                                Unlock Your Community's Voice
+                                Turn Your Website Into a Collaborative Content Platform
                             </h1>
                             <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                                Turn Your Website into a Content Powerhouse for Just <span className="font-bold text-primary">€3/month!</span>
+                                Instantly add a "blogging-as-a-service" toolkit to your site for just <span className="font-bold text-primary">€3/month!</span>
                             </p>
                             <p className="mt-6 text-muted-foreground max-w-4xl mx-auto">
-                                Are you looking for a powerful way to boost engagement, drive organic traffic, and build a vibrant community around your brand? Stop searching. With blogify.blog embed, you can transform your website into a dynamic content hub—effortlessly.
+                                Our simple, copy-and-paste embeds allow you to seamlessly integrate a complete content creation and display system directly into your own platform, without needing to build or maintain a complex backend.
                             </p>
                         </div>
                     </Card>
@@ -140,16 +140,19 @@ export default function SubscriptionsPage() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-center">Why Your Business Needs This</CardTitle>
+                            <CardTitle className="text-center text-3xl font-bold">The Power of blogify.blog Embed</CardTitle>
+                             <CardDescription className="text-center">Outsource your content creation to your most passionate users with zero technical effort.</CardDescription>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-                            {features.map((feature, index) => (
-                                <div key={index} className="flex flex-col items-center">
-                                    <div className="bg-primary/20 p-3 rounded-full mb-3">
+                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                            {powerFeatures.map((feature, index) => (
+                                <div key={index} className="flex items-start gap-4">
+                                    <div className="bg-primary/20 p-3 rounded-lg mt-1">
                                         {feature.icon}
                                     </div>
-                                    <h3 className="font-semibold text-foreground">{feature.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                                    <div>
+                                        <h3 className="font-semibold text-lg text-foreground">{feature.title}</h3>
+                                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                                    </div>
                                 </div>
                             ))}
                         </CardContent>
