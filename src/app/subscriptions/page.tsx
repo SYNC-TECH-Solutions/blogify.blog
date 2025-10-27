@@ -33,7 +33,7 @@ export default function SubscriptionsPage() {
 
     const handleSubscribe = () => {
         // We will implement the Stripe Checkout logic here in the next step.
-        console.log(`Subscribing to plan: €3/month`);
+        console.log(`Subscribing to plan: €2.99/month`);
         if (!user) {
             router.push('/admin'); // Or your dedicated login page
         } else {
@@ -76,7 +76,7 @@ export default function SubscriptionsPage() {
                                 Turn Your Website Into a Collaborative Content Platform
                             </h1>
                             <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                                Instantly add a "blogging-as-a-service" toolkit to your site for just <span className="font-bold text-primary">€3/month!</span>
+                                Instantly add a "blogging-as-a-service" toolkit to your site for just <span className="font-bold text-primary">€2.99/month!</span>
                             </p>
                             <p className="mt-6 text-muted-foreground max-w-4xl mx-auto">
                                 Our simple, copy-and-paste embeds allow you to seamlessly integrate a complete content creation and display system directly into your own platform, without needing to build or maintain a complex backend.
@@ -161,7 +161,7 @@ export default function SubscriptionsPage() {
                     <div className="text-center space-y-4">
                         <p className="text-lg text-muted-foreground">Ready to get started? Integrating our powerful tools is as simple as copying and pasting a snippet of code.</p>
                         <Button size="lg" className="text-lg" onClick={handleSubscribe}>
-                            Subscribe Now for just €3/month
+                            Subscribe Now for just €2.99/month
                         </Button>
                          <p className="text-sm text-muted-foreground">
                             Payments are securely processed by Stripe. You can cancel your subscription at any time.
