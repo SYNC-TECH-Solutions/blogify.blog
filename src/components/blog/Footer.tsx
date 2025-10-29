@@ -55,7 +55,7 @@ export default function Footer() {
                 </div>
                 <Separator className="my-8" />
                 <div className="text-center text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} blogify.blog. All Rights Reserved. Powered by <Link href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-primary underline underline-offset-4">SYNC TECH Solutions</Link>.
+                    &copy; {new Date().getFullYear()} blogify.blog. All Rights Reserved. In Collaboration with <Link href="https://synctech.ie" target="_blank" rel="noopener noreferrer" className="font-medium hover:text-primary underline underline-offset-4">SYNC TECH Solutions</Link>.
                 </div>
             </div>
         </footer>
