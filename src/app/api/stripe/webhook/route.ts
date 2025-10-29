@@ -1,9 +1,9 @@
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/headers';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { initializeFirebase } from '@/firebase/server';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getFirestore } from 'firebase/firestore';
 
 // Ensure Stripe secret key is set
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // Initialize Firebase Admin on the server
+  // Initialize Firebase Admin on the server inside the handler
   const { firestore } = initializeFirebase();
   const subscriptionsCollection = collection(firestore, 'subscriptions');
 
