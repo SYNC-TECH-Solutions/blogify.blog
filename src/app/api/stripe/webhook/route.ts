@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import { initializeFirebase } from '@/firebase/server';
-import { collection, addDoc, serverTimestamp, getFirestore } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 // Ensure Stripe secret key is set
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -12,13 +12,14 @@ if (!stripeSecretKey) {
 }
 const stripe = new Stripe(stripeSecretKey);
 
-// Ensure webhook secret is set
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-if (!webhookSecret) {
-  throw new Error('STRIPE_WEBHOOK_SECRET is not set in environment variables.');
-}
-
 export async function POST(req: NextRequest) {
+  // Move webhook secret check inside the handler
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error('Stripe webhook secret is not set in environment variables.');
+    return NextResponse.json({ error: 'Webhook secret is not configured.' }, { status: 500 });
+  }
+
   const body = await req.text();
   const sig = headers().get('stripe-signature') as string;
 
