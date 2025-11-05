@@ -15,12 +15,13 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, HelpCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { categories } from '@/lib/categories';
 import ContentEditor from './ContentEditor';
@@ -245,8 +246,56 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full">
       <Card className="md:col-span-2">
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{selectedPost ? 'Edit Post' : 'Create New Post'}</CardTitle>
+           <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <HelpCircle className="h-5 w-5" />
+                    <span className="sr-only">Help</span>
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl">
+                <DialogHeader>
+                    <DialogTitle className="text-2xl">Content Editor Guide</DialogTitle>
+                    <DialogDescription>
+                        Follow these instructions to create a well-formatted and SEO-friendly blog post.
+                    </DialogDescription>
+                </DialogHeader>
+                <ScrollArea className="max-h-[70vh] pr-4">
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <h4>Content Editor (Markdown)</h4>
+                        <p>The content editor uses Markdown, a simple way to format text. Use the toolbar buttons for quick formatting.</p>
+                        <ul>
+                            <li><strong>Headings (H1-H6):</strong> Use the 'Heading' button to structure your content. H1 is for the main title (though your post title field is separate), H2 for main sections, H3 for sub-sections, etc. This is very important for readability and SEO.</li>
+                            <li><strong>Bold:</strong> Use `**text**` to make text bold.</li>
+                            <li><strong>Italic:</strong> Use `*text*` to make text italic.</li>
+                            <li><strong>Bulleted Lists:</strong> Start a line with `-` to create a list item.</li>
+                            <li><strong>Tables:</strong> Use the table button to insert a basic Markdown table structure.</li>
+                        </ul>
+
+                        <h4>Working with Links and Media</h4>
+                        <p>To add images, videos, or documents, you must first upload them to a file hosting service (like Google Drive, Dropbox, or a dedicated image hosting site like Imgur) and get a direct public link.</p>
+                        <ul>
+                            <li><strong>Links:</strong> Highlight text and click the Link button. It will wrap your text like `[your text](url)`. Replace `url` with the destination URL.</li>
+                            <li><strong>Images:</strong> For an image, the format is `![alt text](image_url)`. The "alt text" is a description of the image for accessibility and SEO.</li>
+                            <li><strong>Videos & Documents:</strong> You can link to these just like a regular link. A good practice is to describe what the link is, for example: `[Watch the demo video](video_url)`.</li>
+                        </ul>
+
+                        <h4>SEO & Metadata Fields</h4>
+                        <p>These fields are critical for how your post appears on search engines and social media.</p>
+                        <ul>
+                            <li><strong>Meta Description:</strong> A short (150-160 characters) summary of your post. This is often shown by Google under your post title in search results. Make it compelling!</li>
+                            <li><strong>Featured Image URL:</strong> The primary image for your post. It will be shown at the top of your article and in social media previews. Provide a full, direct URL to an image.</li>
+                            <li><strong>Featured Image Alt Text:</strong> A brief description of the featured image. This is read by screen readers for visually impaired users and helps search engines understand what the image is about.</li>
+                        </ul>
+
+                        <h4>Author Name</h4>
+                        <p>This is the publicly displayed name of the post's author. By default, it's your admin display name, but you can change it to attribute the post to someone else if needed.</p>
+                    </div>
+                </ScrollArea>
+            </DialogContent>
+        </Dialog>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -325,6 +374,7 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
               <Card className="bg-muted/50">
                 <CardHeader>
                     <CardTitle className="text-lg">SEO & Metadata</CardTitle>
+                    <CardDescription>Optimize how your post appears on search engines.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <FormField
@@ -457,3 +507,5 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
     </div>
   );
 }
+
+    
