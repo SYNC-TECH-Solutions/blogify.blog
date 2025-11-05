@@ -263,35 +263,82 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
                     </DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="max-h-[70vh] pr-4">
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                        <h4>Content Editor (Markdown)</h4>
-                        <p>The content editor uses Markdown, a simple way to format text. Use the toolbar buttons for quick formatting.</p>
-                        <ul>
-                            <li><strong>Headings (H1-H6):</strong> Use the 'Heading' button to structure your content. H1 is for the main title (though your post title field is separate), H2 for main sections, H3 for sub-sections, etc. This is very important for readability and SEO.</li>
-                            <li><strong>Bold:</strong> Use `**text**` to make text bold.</li>
-                            <li><strong>Italic:</strong> Use `*text*` to make text italic.</li>
-                            <li><strong>Bulleted Lists:</strong> Start a line with `-` to create a list item.</li>
-                            <li><strong>Tables:</strong> Use the table button to insert a basic Markdown table structure.</li>
-                        </ul>
+                    <div className="prose prose-sm dark:prose-invert max-w-none space-y-4">
+                        <div>
+                            <h4 className="text-primary font-semibold">Content Editor (Markdown)</h4>
+                            <p>The content editor uses Markdown. Use the toolbar buttons for quick formatting. Your content will be automatically styled on the blog.</p>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Headings</h4>
+                            <p>Use headings to structure your document. H2 for main sections, H3 for sub-sections, etc. This is crucial for readability and SEO.</p>
+                             <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">## This is a Main Section (H2)</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">### This is a Sub-section (H3)</p>
+                            </div>
+                        </div>
+                         <div>
+                            <h4 className="text-primary font-semibold">Text Formatting</h4>
+                            <p>Emphasize text with bold or italics.</p>
+                             <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">This is **bold text**.</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">This is *italic text*.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Lists</h4>
+                            <p>Use a dash for bulleted lists. Each item should be on a new line.</p>
+                            <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">- First item</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">- Second item</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Links and Media</h4>
+                            <p>To add images, videos, or documents, first upload them to a file hosting service (like Google Drive, Dropbox, or a free service like Imgur) and get a direct public link.</p>
+                            <div className="space-y-2">
+                                <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                    <p className="font-semibold text-sm">Regular Link:</p>
+                                    <p className="text-green-800 dark:text-green-300 font-mono text-xs">[Visit our website](https://example.com)</p>
+                                </div>
+                                <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                    <p className="font-semibold text-sm">Image:</p>
+                                    <p className="text-green-800 dark:text-green-300 font-mono text-xs">![A description of the image](https://example.com/image.jpg)</p>
+                                </div>
+                                <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                    <p className="font-semibold text-sm">Video or Document Link:</p>
+                                    <p className="text-green-800 dark:text-green-300 font-mono text-xs">[Watch the demo video](https://example.com/video.mp4)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Tables</h4>
+                            <p>Use the table button to insert a basic Markdown table. You can add more rows and columns by following the pattern.</p>
+                            <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 font-mono text-xs">
+                                <p>| Header 1 | Header 2 |</p>
+                                <p>| -------- | -------- |</p>
+                                <p>| Cell 1   | Cell 2   |</p>
+                                <p>| Cell 3   | Cell 4   |</p>
+                            </div>
+                        </div>
 
-                        <h4>Working with Links and Media</h4>
-                        <p>To add images, videos, or documents, you must first upload them to a file hosting service (like Google Drive, Dropbox, or a dedicated image hosting site like Imgur) and get a direct public link.</p>
-                        <ul>
-                            <li><strong>Links:</strong> Highlight text and click the Link button. It will wrap your text like `[your text](url)`. Replace `url` with the destination URL.</li>
-                            <li><strong>Images:</strong> For an image, the format is `![alt text](image_url)`. The "alt text" is a description of the image for accessibility and SEO.</li>
-                            <li><strong>Videos & Documents:</strong> You can link to these just like a regular link. A good practice is to describe what the link is, for example: `[Watch the demo video](video_url)`.</li>
-                        </ul>
+                         <hr/>
 
-                        <h4>SEO & Metadata Fields</h4>
-                        <p>These fields are critical for how your post appears on search engines and social media.</p>
-                        <ul>
-                            <li><strong>Meta Description:</strong> A short (150-160 characters) summary of your post. This is often shown by Google under your post title in search results. Make it compelling!</li>
-                            <li><strong>Featured Image URL:</strong> The primary image for your post. It will be shown at the top of your article and in social media previews. Provide a full, direct URL to an image.</li>
-                            <li><strong>Featured Image Alt Text:</strong> A brief description of the featured image. This is read by screen readers for visually impaired users and helps search engines understand what the image is about.</li>
-                        </ul>
-
-                        <h4>Author Name</h4>
-                        <p>This is the publicly displayed name of the post's author. By default, it's your admin display name, but you can change it to attribute the post to someone else if needed.</p>
+                        <div>
+                             <h4 className="text-primary font-semibold">SEO & Metadata Fields</h4>
+                             <p>These fields are critical for how your post appears on search engines and social media.</p>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Meta Description</h4>
+                             <p>A short (150-160 characters) summary of your post. This is often shown by Google under your post title in search results.</p>
+                        </div>
+                         <div>
+                            <h4 className="text-primary font-semibold">Featured Image URL & Alt Text</h4>
+                             <p>Provide a direct URL to the main image for your post. The Alt Text is a brief description that helps search engines and is essential for accessibility.</p>
+                        </div>
+                        <div>
+                            <h4 className="text-primary font-semibold">Author Name</h4>
+                             <p>The publicly displayed name of the post's author. By default, it's your admin display name, but you can change it to attribute the post to someone else.</p>
+                        </div>
                     </div>
                 </ScrollArea>
             </DialogContent>
@@ -507,5 +554,7 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
     </div>
   );
 }
+
+    
 
     
