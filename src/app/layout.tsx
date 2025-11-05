@@ -8,10 +8,12 @@ import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { URL } from 'url';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://blogify.blog'),
   title: 'blogify.blog - Your Global Content & Startup Platform',
   description: 'blogify.blog is a global platform for discovering content across all categories and a launchpad for startups to gain visibility on search engines. Founded by SS Brothers.',
   icons: {
