@@ -11,6 +11,9 @@ export interface BlogPost {
   isPublished: boolean;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  metaDescription?: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
 }
 
 export interface Subscription {
