@@ -80,11 +80,10 @@ export default function BlogView({ posts }: BlogViewProps) {
                 <Link href={`/blog/${post.id}`} className="block">
                     <div className="relative w-full h-48 bg-muted">
                         {post.featuredImageUrl ? (
-                            <Image
+                            <img
                                 src={post.featuredImageUrl}
                                 alt={post.featuredImageAlt || post.title}
-                                fill
-                                className="object-cover"
+                                className="w-full h-full object-cover"
                             />
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10"></div>
