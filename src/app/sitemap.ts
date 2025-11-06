@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
      {
       url: `${URL}/privacy-policy`,
-      lastModified: new date(),
+      lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
