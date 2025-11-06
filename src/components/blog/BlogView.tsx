@@ -8,11 +8,9 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import ReactMarkdown from 'react-markdown';
-import { Share2 } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
 import React from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 interface BlogViewProps {
   posts: BlogPost[];
@@ -20,39 +18,7 @@ interface BlogViewProps {
 
 export default function BlogView({ posts }: BlogViewProps) {
   const headerImage = PlaceHolderImages.find(img => img.id === 'blog-header');
-  const { toast } = useToast();
-
-  const handleShare = async (post: BlogPost) => {
-    if (typeof window === 'undefined') return;
-    const postUrl = `${window.location.origin}/#${post.id}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: `Check out this blog post: ${post.title}`,
-          url: postUrl,
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(postUrl);
-        toast({
-          title: "Link Copied!",
-          description: "The post link has been copied to your clipboard.",
-        });
-      } catch (error) {
-        console.error('Error copying to clipboard:', error);
-        toast({
-          title: "Error",
-          description: "Could not copy link to clipboard.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
+  
   const formatDate = (date: any) => {
     if (!date) return '...';
     // Check if it's a Firestore Timestamp
@@ -98,48 +64,48 @@ export default function BlogView({ posts }: BlogViewProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-8 grid-cols-1">
-          {posts.map((post, index) => (
-            <React.Fragment key={post.id}>
-              <Card id={post.id} className="flex flex-col scroll-mt-20 bg-primary/10">
+        <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <Card key={post.id} className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <Link href={`/blog/${post.id}`} className="block">
+                    <div className="relative w-full h-48 bg-muted">
+                        {post.featuredImageUrl ? (
+                            <Image
+                                src={post.featuredImageUrl}
+                                alt={post.featuredImageAlt || post.title}
+                                fill
+                                className="object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-primary/10 to-accent/10"></div>
+                        )}
+                    </div>
+                </Link>
                 <CardHeader>
-                  <CardTitle className="text-3xl font-bold tracking-tight">{post.title}</CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-                      <span>Posted on {formatDate(post.createdAt)}</span>
-                      {post.category && <Badge variant="secondary">{post.category}</Badge>}
-                  </div>
+                    {post.category && <Badge variant="secondary" className="w-fit mb-2">{post.category}</Badge>}
+                    <Link href={`/blog/${post.id}`} className="block">
+                        <CardTitle className="text-xl font-bold tracking-tight hover:text-primary">{post.title}</CardTitle>
+                    </Link>
+                    <CardDescription className="line-clamp-3 text-sm">
+                        {post.metaDescription || post.content.substring(0, 150) + '...'}
+                    </CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <ReactMarkdown
-                      skipHtml={true}
-                    >
-                        {post.content}
-                    </ReactMarkdown>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center mt-auto">
-                  <p className="text-sm text-muted-foreground">By {post.authorName || 'Anonymous'}</p>
-                  <Button variant="ghost" size="icon" onClick={() => handleShare(post)}>
-                    <Share2 className="h-5 w-5" />
-                    <span className="sr-only">Share Post</span>
-                  </Button>
+                <CardFooter className="mt-auto flex justify-between items-center text-xs text-muted-foreground">
+                    <div>
+                        <p>By {post.authorName || 'Anonymous'}</p>
+                        <p>{formatDate(post.createdAt)}</p>
+                    </div>
+                    <Link href={`/blog/${post.id}`} passHref>
+                        <Button variant="outline" size="sm">
+                            Read More <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                    </Link>
                 </CardFooter>
-              </Card>
-              {/* Mobile Ad Placeholder */}
-              {(index + 1) % 2 === 0 && (
-                <div className="md:hidden w-full h-auto bg-muted/40 flex items-center justify-center rounded-lg shadow p-6">
-                  <Link href="/subscriptions" className="flex flex-col items-center justify-center text-center">
-                      <h4 className="font-bold text-base text-foreground">More Content. Better SEO. Zero Effort.</h4>
-                      <p className="text-muted-foreground text-sm mt-2">Let your users and our AI write your blog for you. See your search rankings climb.</p>
-                      <Button size="sm" className="mt-4">Get Your Embed</Button>
-                  </Link>
-                </div>
-              )}
-            </React.Fragment>
+            </Card>
           ))}
         </div>
       )}
     </div>
   );
 }
+

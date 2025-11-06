@@ -1,6 +1,8 @@
 
 import { MetadataRoute } from 'next'
 import { categories } from '@/lib/categories';
+import { initializeFirebase } from '@/firebase/server';
+import { collection, getDocs, query, where } from 'firebase/firestore';
  
 const URL = 'https://blogify.blog';
 
@@ -27,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
      {
       url: `${URL}/privacy-policy`,
-      lastModified: new Date(),
+      lastModified: new date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
@@ -52,8 +54,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   })) satisfies MetadataRoute.Sitemap;
 
+  let blogPostPages: MetadataRoute.Sitemap = [];
+  try {
+    const { firestore } = initializeFirebase();
+    const postsCollectionPath = `artifacts/${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}/public/data/blog_posts`;
+    const q = query(collection(firestore, postsCollectionPath), where('isPublished', '==', true));
+    const querySnapshot = await getDocs(q);
+    blogPostPages = querySnapshot.docs.map(doc => ({
+      url: `${URL}/blog/${doc.id}`,
+      lastModified: doc.data().updatedAt?.toDate() || new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9
+    }));
+  } catch (e) {
+    console.error("Could not generate sitemap for blog posts", e);
+  }
+
+
   return [
     ...staticPages,
     ...categoryPages,
+    ...blogPostPages
   ];
 }
+
