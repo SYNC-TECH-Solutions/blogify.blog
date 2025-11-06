@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -143,12 +144,10 @@ export default function PostPage() {
           <Card>
             {post.featuredImageUrl && (
               <div className="relative w-full h-64 md:h-96 rounded-t-lg overflow-hidden">
-                <Image
+                <img
                   src={post.featuredImageUrl}
                   alt={post.featuredImageAlt || post.title}
-                  fill
-                  className="object-cover"
-                  priority
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
             )}
