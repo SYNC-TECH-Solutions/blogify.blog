@@ -33,6 +33,16 @@ export default function BlogView({ posts }: BlogViewProps) {
     }
   };
 
+  const createSnippet = (content: string) => {
+    // Remove Markdown images, links, and other formatting for a clean text snippet.
+    const plainText = content
+      .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove link markdown but keep text
+      .replace(/#+\s/g, '') // Remove headings
+      .replace(/[*_`~]/g, ''); // Remove emphasis characters
+    return plainText.substring(0, 150) + '...';
+  }
+
 
   return (
     <div className="space-y-8">
@@ -87,7 +97,7 @@ export default function BlogView({ posts }: BlogViewProps) {
                         <CardTitle className="text-xl font-bold tracking-tight hover:text-primary">{post.title}</CardTitle>
                     </Link>
                     <CardDescription className="line-clamp-3 text-sm">
-                        {post.metaDescription || post.content.substring(0, 150) + '...'}
+                        {post.metaDescription || createSnippet(post.content)}
                     </CardDescription>
                 </CardHeader>
                 <CardFooter className="mt-auto flex justify-between items-center text-xs text-muted-foreground">
@@ -108,4 +118,3 @@ export default function BlogView({ posts }: BlogViewProps) {
     </div>
   );
 }
-
