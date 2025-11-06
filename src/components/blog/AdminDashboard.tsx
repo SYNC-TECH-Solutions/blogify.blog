@@ -270,10 +270,14 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
                         </div>
                         <div>
                             <h4 className="text-primary font-semibold">Headings</h4>
-                            <p>Use headings to structure your document. H2 for main sections, H3 for sub-sections, etc. This is crucial for readability and SEO.</p>
+                            <p>Use headings to structure your document. A single H1 is recommended for the main title (which is handled by the "Title" field already), then H2 for main sections, H3 for sub-sections, etc. This is crucial for readability and SEO.</p>
                              <div className="p-3 bg-green-100/50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
-                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">## This is a Main Section (H2)</p>
-                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">### This is a Sub-section (H3)</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs"># Heading 1 (Largest)</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">## Heading 2</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">### Heading 3</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">#### Heading 4</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">##### Heading 5</p>
+                                <p className="text-green-800 dark:text-green-300 font-mono text-xs">###### Heading 6 (Smallest)</p>
                             </div>
                         </div>
                          <div>
@@ -554,6 +558,8 @@ export default function AdminDashboard({ posts, user, initialPost = null, onClea
     </div>
   );
 }
+
+    
 
     
 
