@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
@@ -14,7 +14,37 @@ interface BlogViewProps {
   posts: BlogPost[];
 }
 
+const headerContent = [
+  {
+    title: "Welcome to blogify.blog",
+    subtitle: "Your global stage for ideas, insights, and innovation.",
+    cta: null,
+  },
+  {
+    title: "The blogify.blog Post",
+    subtitle: "Insights, stories, and ideas from the forefront of innovation.",
+    cta: null,
+  },
+  {
+    title: "Infinite Content. Price of a Coffee.",
+    subtitle: "Unleash an endless stream of user-generated articles and boost your SEO for just €2.99 a month.",
+    cta: {
+      text: "Subscribe Now",
+      href: "/subscriptions",
+    },
+  },
+];
+
 export default function BlogView({ posts }: BlogViewProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % headerContent.length);
+    }, 5000); // Change text every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
   
   const formatDate = (date: any) => {
     if (!date) return '...';
@@ -43,15 +73,34 @@ export default function BlogView({ posts }: BlogViewProps) {
 
   return (
     <div className="space-y-8">
-      <div className="relative w-full h-48 md:h-72 rounded-lg overflow-hidden shadow-lg">
+      <div className="relative w-full h-72 md:h-80 rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
         <div className="absolute inset-0 animated-gradient" />
-        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
-                The blogify.blog Post
-            </h1>
-            <p className="mt-2 md:mt-4 text-lg md:text-xl text-neutral-200 max-w-2xl">
-                Insights, stories, and ideas from the forefront of innovation.
-            </p>
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative text-center p-4 z-10">
+          {headerContent.map((item, index) => (
+            <div
+              key={index}
+              className={`transition-opacity duration-1000 ease-in-out ${
+                index === currentIndex ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
+            >
+              {index === currentIndex && (
+                <div className="flex flex-col items-center justify-center animate-in fade-in-0 slide-in-from-bottom-5 duration-700">
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                        {item.title}
+                    </h1>
+                    <p className="mt-2 md:mt-4 text-lg text-neutral-200 max-w-2xl">
+                        {item.subtitle}
+                    </p>
+                    {item.cta && (
+                        <Link href={item.cta.href} passHref>
+                            <Button className="mt-4" size="lg">{item.cta.text}</Button>
+                        </Link>
+                    )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
       
