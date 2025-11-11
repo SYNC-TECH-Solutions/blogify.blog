@@ -3,25 +3,25 @@
     {
       "id": "blog-header",
       "description": "Abstract background for blog header",
-      "imageUrl": "https://picsum.photos/seed/modern-workspace/1200/300",
-      "imageHint": "modern workspace"
+      "imageUrl": "https://images.unsplash.com/photo-1571964990631-e97569ce49ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjcmVhdGl2ZSUyMGZsb3d8ZW58MHx8fHwxNzYyODc1NzQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creative flow"
     },
     {
       "id": "about-us-hero",
       "description": "A diverse group of people collaborating on a project, representing global connection.",
-      "imageUrl": "https://picsum.photos/seed/about-hero/1200/400",
+      "imageUrl": "https://images.unsplash.com/photo-1618521715147-29e4b97e2ebd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnbG9iYWwlMjB0ZWFtfGVufDB8fHx8MTc2Mjg3NTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "global team"
     },
     {
       "id": "mission-vision",
       "description": "A lightbulb or a growing plant, symbolizing new ideas and innovation.",
-      "imageUrl": "https://picsum.photos/seed/mission-vision/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1662493724051-01a5046b530b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxpbm5vdmF0aW9uJTIwZ3Jvd3RofGVufDB8fHx8MTc2Mjg3NTc0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "innovation growth"
     },
     {
       "id": "contact-us-hero",
       "description": "An artistic and modern image of communication tools like a vintage phone or letters.",
-      "imageUrl": "https://picsum.photos/seed/contact-hero/1200/400",
+      "imageUrl": "https://images.unsplash.com/photo-1705083649406-e72514a44002?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjb21tdW5pY2F0aW9uJTIwdG9vbHN8ZW58MHx8fHwxNzYyODc1NzQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "communication tools"
     }
   ]
