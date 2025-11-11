@@ -33,6 +33,14 @@ const headerContent = [
       href: "/subscriptions",
     },
   },
+  {
+    title: "Ready to give your business a new look?",
+    subtitle: "Partner with us to amplify your brand and reach a global audience.",
+    cta: {
+        text: "Contact Us",
+        href: "/contact"
+    }
+  }
 ];
 
 export default function BlogView({ posts }: BlogViewProps) {
