@@ -13,8 +13,8 @@ import { cn } from '@/lib/utils';
 
 const headerContent = [
   {
-    title: "The blogify.blog Post",
-    subtitle: "Insights, stories, and ideas from the forefront of innovation.",
+    title: "Insights, stories, and ideas from the forefront of innovation.",
+    subtitle: "",
     cta: null,
   },
   {
@@ -35,7 +35,7 @@ const headerContent = [
   }
 ];
 
-const typingTarget = "#Welcome to blogify.blog";
+const typingTarget = "# Welcome to blogify.blog";
 
 export default function BlogView({ posts }: { posts: BlogPost[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -200,3 +200,5 @@ export default function BlogView({ posts }: { posts: BlogPost[] }) {
     </div>
   );
 }
+
+    
