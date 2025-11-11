@@ -37,7 +37,7 @@ const headerContent = [
 
 const typingTarget = "#Welcome to blogify.blog";
 
-export default function BlogView({ posts }: BlogViewProps) {
+export default function BlogView({ posts }: { posts: BlogPost[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
 
