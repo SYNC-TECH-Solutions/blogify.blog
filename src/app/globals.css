@@ -87,3 +87,17 @@ body {
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+@layer utilities {
+  @keyframes moving-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animated-gradient {
+    background: linear-gradient(-45deg, hsl(var(--primary) / 0.6), hsl(var(--accent) / 0.6), hsl(var(--secondary)), hsl(var(--primary) / 0.4));
+    background-size: 400% 400%;
+    animation: moving-gradient 15s ease infinite;
+  }
+}

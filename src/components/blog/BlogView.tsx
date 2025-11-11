@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -17,7 +15,6 @@ interface BlogViewProps {
 }
 
 export default function BlogView({ posts }: BlogViewProps) {
-  const headerImage = PlaceHolderImages.find(img => img.id === 'blog-header');
   
   const formatDate = (date: any) => {
     if (!date) return '...';
@@ -47,17 +44,8 @@ export default function BlogView({ posts }: BlogViewProps) {
   return (
     <div className="space-y-8">
       <div className="relative w-full h-48 md:h-72 rounded-lg overflow-hidden shadow-lg">
-        {headerImage && (
-          <Image
-            src={headerImage.imageUrl}
-            alt={headerImage.description}
-            fill
-            className="object-cover"
-            data-ai-hint={headerImage.imageHint}
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center p-4">
+        <div className="absolute inset-0 animated-gradient" />
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
             <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight">
                 The blogify.blog Post
             </h1>
