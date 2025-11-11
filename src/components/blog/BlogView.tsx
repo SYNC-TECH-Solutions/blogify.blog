@@ -40,7 +40,6 @@ const typingTarget = "# Welcome to blogify.blog";
 export default function BlogView({ posts }: { posts: BlogPost[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
-  const [animatedText, setAnimatedText] = useState({ title: '', subtitle: '' });
 
   useEffect(() => {
     // Interval for changing slides
@@ -52,11 +51,8 @@ export default function BlogView({ posts }: { posts: BlogPost[] }) {
   }, []);
 
   useEffect(() => {
-    setTypedText("");
-    setAnimatedText({ title: '', subtitle: '' });
-
     if (currentIndex === 0) {
-      // Handle special typing for the first slide
+      setTypedText("");
       let charIndex = 0;
       const typingInterval = setInterval(() => {
         if (charIndex < typingTarget.length) {
@@ -67,39 +63,6 @@ export default function BlogView({ posts }: { posts: BlogPost[] }) {
         }
       }, 100);
       return () => clearInterval(typingInterval);
-    } else {
-      // Handle typing for other slides
-      const slide = headerContent[currentIndex - 1];
-      if (slide) {
-        let titleIndex = 0;
-        let subtitleIndex = 0;
-
-        const typingInterval = setInterval(() => {
-          let newTitle = slide.title;
-          let newSubtitle = slide.subtitle;
-          let changed = false;
-
-          if (titleIndex < slide.title.length) {
-            newTitle = slide.title.slice(0, titleIndex + 1);
-            titleIndex++;
-            changed = true;
-          }
-          
-          if (titleIndex >= slide.title.length && subtitleIndex < slide.subtitle.length) {
-             newSubtitle = slide.subtitle.slice(0, subtitleIndex + 1);
-             subtitleIndex++;
-             changed = true;
-          }
-
-          setAnimatedText({ title: newTitle, subtitle: newSubtitle });
-
-          if (!changed) {
-            clearInterval(typingInterval);
-          }
-
-        }, 50); // Adjust speed as needed
-        return () => clearInterval(typingInterval);
-      }
     }
   }, [currentIndex]);
   
@@ -172,11 +135,10 @@ export default function BlogView({ posts }: { posts: BlogPost[] }) {
               {index + 1 === currentIndex && (
                 <div className="animate-in fade-in-0 slide-in-from-bottom-5 duration-700">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight min-h-[110px]">
-                        {animatedText.title}
-                        <span className="inline-block w-2 h-10 bg-white animate-pulse ml-1" />
+                        {item.title}
                     </h1>
                     <p className="mt-2 md:mt-4 text-lg text-neutral-200 max-w-2xl mx-auto min-h-[60px]">
-                        {animatedText.subtitle}
+                        {item.subtitle}
                     </p>
                     {item.cta && (
                         <Link href={item.cta.href} passHref>
