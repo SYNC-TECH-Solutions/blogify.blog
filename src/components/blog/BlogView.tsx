@@ -9,17 +9,9 @@ import { format } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-
-interface BlogViewProps {
-  posts: BlogPost[];
-}
+import { cn } from '@/lib/utils';
 
 const headerContent = [
-  {
-    title: "Welcome to blogify.blog",
-    subtitle: "Your global stage for ideas, insights, and innovation.",
-    cta: null,
-  },
   {
     title: "The blogify.blog Post",
     subtitle: "Insights, stories, and ideas from the forefront of innovation.",
@@ -43,16 +35,34 @@ const headerContent = [
   }
 ];
 
+const typingTarget = "#Welcome to blogify.blog";
+
 export default function BlogView({ posts }: BlogViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [typedText, setTypedText] = useState("");
 
   useEffect(() => {
+    // Typing effect for the first slide
+    if (currentIndex === 0) {
+      if (typedText.length < typingTarget.length) {
+        const timeoutId = setTimeout(() => {
+          setTypedText(typingTarget.slice(0, typedText.length + 1));
+        }, 100); // Typing speed
+        return () => clearTimeout(timeoutId);
+      }
+    }
+
+    // Interval for changing slides
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % headerContent.length);
-    }, 5000); // Change text every 5 seconds
+      // When transitioning away from the typing slide, reset it
+      if (currentIndex === 0) {
+        setTypedText("");
+      }
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % (headerContent.length + 1));
+    }, 5000); // Change slide every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentIndex, typedText]);
   
   const formatDate = (date: any) => {
     if (!date) return '...';
@@ -81,23 +91,51 @@ export default function BlogView({ posts }: BlogViewProps) {
 
   return (
     <div className="space-y-8">
-      <div className="relative w-full h-72 md:h-80 rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
+      <div className="relative w-full h-80 md:h-96 rounded-lg overflow-hidden shadow-lg flex items-center justify-center">
         <div className="absolute inset-0 animated-gradient" />
         <div className="absolute inset-0 bg-black/60" />
-        <div className="relative text-center p-4 z-10">
+        <div className="relative text-center p-4 z-10 w-full max-w-4xl mx-auto">
+          {/* Typing Animation Slide */}
+          <div
+            className={cn(
+              'transition-opacity duration-1000 ease-in-out',
+              currentIndex === 0 ? 'opacity-100' : 'opacity-0 absolute'
+            )}
+          >
+            {currentIndex === 0 && (
+                <div className="animate-in fade-in-0 slide-in-from-bottom-5 duration-700 font-mono text-left bg-gray-800/50 p-4 sm:p-6 rounded-lg border border-gray-600/50 backdrop-blur-sm">
+                    <div className="text-gray-400 text-sm">
+                        <span>~</span>/<span>post.md</span>
+                    </div>
+                    <div className="mt-2 text-lg sm:text-xl text-white">
+                        <span className="text-primary">{typedText.split(" ")[0]}</span>
+                        <span>{typedText.substring(typedText.indexOf(" "))}</span>
+                        <span className="inline-block w-2 h-5 sm:h-6 bg-white animate-pulse ml-1" />
+                    </div>
+                    <div className="border-t border-dashed border-gray-600/50 my-4"></div>
+                    <div className="text-gray-400 text-sm mb-2">PREVIEW</div>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+                        {typedText.replace(/#/g, '')}
+                    </h1>
+                </div>
+            )}
+          </div>
+          
+          {/* Other Text Slides */}
           {headerContent.map((item, index) => (
             <div
               key={index}
-              className={`transition-opacity duration-1000 ease-in-out ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0 absolute'
-              }`}
+              className={cn(
+                'transition-opacity duration-1000 ease-in-out',
+                index + 1 === currentIndex ? 'opacity-100' : 'opacity-0 absolute'
+              )}
             >
-              {index === currentIndex && (
-                <div className="flex flex-col items-center justify-center animate-in fade-in-0 slide-in-from-bottom-5 duration-700">
+              {index + 1 === currentIndex && (
+                <div className="animate-in fade-in-0 slide-in-from-bottom-5 duration-700">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
                         {item.title}
                     </h1>
-                    <p className="mt-2 md:mt-4 text-lg text-neutral-200 max-w-2xl">
+                    <p className="mt-2 md:mt-4 text-lg text-neutral-200 max-w-2xl mx-auto">
                         {item.subtitle}
                     </p>
                     {item.cta && (
